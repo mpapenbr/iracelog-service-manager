@@ -8,6 +8,7 @@ Contents
    readme
    installation
    usage
+   architecture/index
    reference/index
    contributing
    authors
