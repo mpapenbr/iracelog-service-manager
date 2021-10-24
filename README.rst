@@ -12,9 +12,7 @@ Overview
     * - tests
       - |
         | |codecov|
-    * - package
-      - | |version| |wheel| |supported-versions| |supported-implementations|
-        | |commits-since|
+
 .. |docs| image:: https://readthedocs.org/projects/iracelog-service-manager/badge/?style=flat
     :target: https://iracelog-service-manager.readthedocs.io/
     :alt: Documentation Status
@@ -23,21 +21,6 @@ Overview
     :alt: Coverage Status
     :target: https://codecov.io/github/mpapenbr/iracelog-service-manager
 
-.. |version| image:: https://img.shields.io/pypi/v/iracelog-service-manager.svg
-    :alt: PyPI Package latest release
-    :target: https://pypi.org/project/iracelog-service-manager
-
-.. |wheel| image:: https://img.shields.io/pypi/wheel/iracelog-service-manager.svg
-    :alt: PyPI Wheel
-    :target: https://pypi.org/project/iracelog-service-manager
-
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/iracelog-service-manager.svg
-    :alt: Supported versions
-    :target: https://pypi.org/project/iracelog-service-manager
-
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/iracelog-service-manager.svg
-    :alt: Supported implementations
-    :target: https://pypi.org/project/iracelog-service-manager
 
 .. |commits-since| image:: https://img.shields.io/github/commits-since/mpapenbr/iracelog-service-manager/v0.0.0.svg
     :alt: Commits since latest release
