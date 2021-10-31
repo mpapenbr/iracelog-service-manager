@@ -1,3 +1,7 @@
 
-.. include:: overview.rst
+.. toctree::
+    :glob:
+
+    overview*
+
 
