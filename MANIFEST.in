@@ -3,6 +3,7 @@ graft src
 graft ci
 graft tests
 graft .devcontainer
+graft scripts
 
 include .bumpversion.cfg
 include .cookiecutterrc
@@ -21,5 +22,5 @@ include .gitchangelog.rc
 include newRelease.sh
 include requirements_dev.txt
 
-
-global-exclude *.py[cod] __pycache__/* *.so *.dylib
+recursive-exclude docs/_build *
+global-exclude *.py[cod] __pycache__/* *.so *.dylib 
