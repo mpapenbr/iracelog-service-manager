@@ -2,6 +2,7 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.158.0/containers/python-3
 {
 	"name": "Python 3",
+	"runArgs": ["--init"],
 	"build": {
 		"dockerfile": "Dockerfile",
 		"context": "..",
@@ -18,6 +19,7 @@
 	"settings": { 
 		"terminal.integrated.defaultProfile.linux": "zsh",
 		"python.pythonPath": "/usr/local/bin/python",
+		"python.languageServer": "Pylance",
 		"python.linting.enabled": true,
 		"python.linting.pylintEnabled": true,
 		"python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
