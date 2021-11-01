@@ -14,10 +14,24 @@ Why does this file exist, and why not put this in __main__?
 
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
+
 import click
+import configparser
+import os
+import autobahn
+import urllib3
 
+from iracelog_service_manager import __version__
 
-@click.command()
-@click.argument('names', nargs=-1)
+@click.group()
+@click.option('--url', help='url of the crossbar server', envvar="RACELOG_URL", show_default=True)
+@click.option('--realm', help='crossbar realm for racelogger ', envvar="RACELOG_REALM", show_default=True)
+@click.option('--user', help='user name to access crossbar realm', envvar="RACELOG_USER", required=True)
+@click.option('--password', help='user password  to access crossbar realm', envvar="RACELOG_PASSWORD", required=True)
+@click.version_option(__version__)
 def main(names):
-    click.echo(repr(names))
+    pass
+ 
+@main.command()
+def manager():
+  pass   
