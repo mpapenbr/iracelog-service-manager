@@ -42,8 +42,14 @@ Endpoints
       - backend
       - call, register, publish, subscribe
 
+Crossbar
+--------
 
+The following snippet can be used as a template for a crossbar server.
 
+.. literalinclude:: crossbar.config
+  :language: json
+  :linenos: 
 
 Migration
 ---------
