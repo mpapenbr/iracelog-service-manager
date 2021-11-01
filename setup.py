@@ -65,7 +65,7 @@ setup(
     ],
     python_requires='>=3.9',
     install_requires=[
-        'click',
+        'click>=8',
         'autobahn>=21'
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
