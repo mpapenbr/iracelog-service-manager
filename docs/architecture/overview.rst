@@ -1,11 +1,25 @@
 Architecture
 ============
 
+The overall picture looks like this
+
+.. image:: arch.drawio.svg
+
+Upon connecting to the local iRacing instance the Racelogger registers with the backend with a unique id (this is generated via the current iRacing weekend info from telemetry).
+
+The manager announces the new provider on the `manager.provider` topic. 
+
+The analysis and archive components listen to this topic and prepare themselves to receive data from the topic `state.{id}` to which the Racelogger will post its data. 
+They also listen to the provider specific topic `manager.command.{id}`. 
+The manager announces specific events on this topic, for example: the provider has unregistered.
+
+At the end of recording the Racelogger calls the `remove_provider` endpoint. The manager in turn announces this event on the topic `manager.command.{id}`
+
 Endpoints
 ---------
 
-.. list-table:: Crossbar endpoints
-    :widths: 10 10 10 10
+.. list-table:: 
+    :widths: auto
     :header-rows: 1
 
     * - Prefix 
@@ -31,7 +45,6 @@ Endpoints
 
 
 
-
 Migration
 ---------
 
@@ -39,8 +52,8 @@ Racelogger
 ^^^^^^^^^^
 
 
-.. list-table:: Racelogger
-    :widths: 10 10 10 
+.. list-table:: 
+    :widths: auto
     :header-rows: 1
 
     * - Current
@@ -62,7 +75,7 @@ Racelogger
 Web
 ^^^
 
-.. list-table:: Webfrontend (iRacelog)
+.. list-table:: 
     :widths: auto
     :header-rows: 1
 
