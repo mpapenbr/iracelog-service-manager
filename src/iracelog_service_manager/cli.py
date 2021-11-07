@@ -15,23 +15,55 @@ Why does this file exist, and why not put this in __main__?
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
 
-import click
+import asyncio
 import configparser
 import os
-import autobahn
-import urllib3
+import ssl
 
+import autobahn
+import certifi
+import click
+import txaio
+import urllib3
+from autobahn.asyncio.wamp import ApplicationRunner
+from autobahn.asyncio.wamp import ApplicationSession
+from autobahn.wamp.exception import ApplicationError
+from logging import config
 from iracelog_service_manager import __version__
+from iracelog_service_manager.manager.overall import ProviderManager
+
 
 @click.group()
+@click.pass_context
 @click.option('--url', help='url of the crossbar server', envvar="RACELOG_URL", show_default=True)
 @click.option('--realm', help='crossbar realm for racelogger ', envvar="RACELOG_REALM", show_default=True)
 @click.option('--user', help='user name to access crossbar realm', envvar="RACELOG_USER", required=True)
 @click.option('--password', help='user password  to access crossbar realm', envvar="RACELOG_PASSWORD", required=True)
 @click.version_option(__version__)
-def main(names):
+def main(ctx,url,realm,user,password):
+    ctx.ensure_object(dict)
+    ctx.obj['url'] = url
+    ctx.obj['realm'] = realm
+    ctx.obj['user'] = user
+    ctx.obj['password'] = password
     pass
  
 @main.command()
-def manager():
-  pass   
+@click.pass_context
+@click.option('--verbose', "-v", help='set verbosity level', count=True)
+def manager(ctx, verbose):
+    """init and start the crossbar clients archiver and manager"""
+    click.echo(f"In manager url={ctx.obj['url']}")
+    extra={'user':ctx.obj['user'], 'password': ctx.obj['password']}
+    if ctx.obj['url'].startswith("wss://"):
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+    else:
+        ssl_context = None
+
+    levels = ['info', 'debug', 'trace']
+    ctx.obj['logLevel'] = levels[min(verbose,len(levels)-1)]
+    txaio.start_logging(level=ctx.obj['logLevel'])
+    config.fileConfig('logging.conf')
+    runner = ApplicationRunner(url=ctx.obj['url'], realm=ctx.obj['realm'], extra=extra, ssl=ssl_context)
+    # runner.run(ProviderManager, log_level=ctx.obj['logLevel'])
+    runner.run(ProviderManager)

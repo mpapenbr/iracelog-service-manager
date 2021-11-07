@@ -3,6 +3,13 @@ this module handles manages race data provider
 """
 from autobahn.asyncio.wamp import ApplicationSession
 
+from iracelog_service_manager.manager.archiver import Archiver
+from iracelog_service_manager.manager.registry import Registry
+
+import asyncio
+
+from iracelog_service_manager.model.eventlookup import EventLookup
+
 class ProviderManager(ApplicationSession):
     """
     handles register and removal of race data provider
@@ -30,5 +37,18 @@ class ProviderManager(ApplicationSession):
 
     def onDisconnect(self):
         self.log.info("Router connection closed")
-        
 
+    async def onJoin(self, details):
+        self.log.info("joined {details}", details=details)
+        try:
+            events = EventLookup()
+            archiver = Archiver(self)
+            registry = Registry(appSession=self, events=events)
+
+            
+        except Exception as e:
+            self.log.error("Got exception {e}", e=e)
+            self.leave()
+        
+    def onDisconnect(self):
+        asyncio.get_event_loop().stop()
