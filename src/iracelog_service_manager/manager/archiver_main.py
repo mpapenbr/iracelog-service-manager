@@ -6,11 +6,9 @@ import asyncio
 from autobahn.asyncio.wamp import ApplicationSession
 
 from iracelog_service_manager.manager.archiver import Archiver
-from iracelog_service_manager.manager.registry import Registry
-from iracelog_service_manager.model.eventlookup import EventLookup
 
 
-class ProviderManager(ApplicationSession):
+class ArchiverManager(ApplicationSession):
     """
     handles register and removal of race data provider
     we expect the following structure in config.exta
@@ -24,7 +22,7 @@ class ProviderManager(ApplicationSession):
     """
 
     def onConnect(self):
-        self.log.info("Client connected: {klass}", klass=ProviderManager)
+        self.log.info("Client connected: {klass}", klass=ArchiverManager)
         self.join(self.config.realm, authid=self.config.extra['user'], authmethods=["ticket"])
 
     def onChallenge(self, challenge):
@@ -41,11 +39,7 @@ class ProviderManager(ApplicationSession):
     async def onJoin(self, details):
         self.log.info("joined {details}", details=details)
         try:
-            events = EventLookup()
-            # archiver = Archiver(self)
-            registry = Registry(appSession=self, events=events)
-
-            
+            archiver = Archiver(self)
         except Exception as e:
             self.log.error("Got exception {e}", e=e)
             self.leave()

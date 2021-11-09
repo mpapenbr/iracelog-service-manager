@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from dataclasses import field
 
 
-
 @dataclass
 class EventLookup:
     lookup: dict = field(default_factory=dict)

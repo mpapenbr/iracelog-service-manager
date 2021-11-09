@@ -1,8 +1,12 @@
-from dataclasses import dataclass
 import dataclasses
+from dataclasses import dataclass
 
-from autobahn.asyncio.wamp import ApplicationSession, Session
-from iracelog_service_manager.model.eventlookup import EventLookup, ProviderData
+from autobahn.asyncio.wamp import ApplicationSession
+from autobahn.asyncio.wamp import Session
+
+from iracelog_service_manager.model.eventlookup import EventLookup
+from iracelog_service_manager.model.eventlookup import ProviderData
+
 
 @dataclass
 class Registry:
@@ -25,6 +29,7 @@ class Registry:
         if data['eventKey'] in self.events.lookup:
             raise Exception("already there")
         self.events.lookup[data['eventKey']] = x
+        self.appSession.publish("racelog.manager.provider", {'eventType': 'new', 'eventData': dataclasses.asdict(x)})
         # TODO: create db entry
         # TODO: announce new provider
     

@@ -19,6 +19,7 @@ import asyncio
 import configparser
 import os
 import ssl
+from logging import config
 
 import autobahn
 import certifi
@@ -28,8 +29,9 @@ import urllib3
 from autobahn.asyncio.wamp import ApplicationRunner
 from autobahn.asyncio.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
-from logging import config
+
 from iracelog_service_manager import __version__
+from iracelog_service_manager.manager.archiver_main import ArchiverManager
 from iracelog_service_manager.manager.overall import ProviderManager
 
 
@@ -52,7 +54,7 @@ def main(ctx,url,realm,user,password):
 @click.pass_context
 @click.option('--verbose', "-v", help='set verbosity level', count=True)
 def manager(ctx, verbose):
-    """init and start the crossbar clients archiver and manager"""
+    """init and start the crossbar clients manager"""
     click.echo(f"In manager url={ctx.obj['url']}")
     extra={'user':ctx.obj['user'], 'password': ctx.obj['password']}
     if ctx.obj['url'].startswith("wss://"):
@@ -67,3 +69,23 @@ def manager(ctx, verbose):
     runner = ApplicationRunner(url=ctx.obj['url'], realm=ctx.obj['realm'], extra=extra, ssl=ssl_context)
     # runner.run(ProviderManager, log_level=ctx.obj['logLevel'])
     runner.run(ProviderManager)
+
+@main.command()
+@click.pass_context
+@click.option('--verbose', "-v", help='set verbosity level', count=True)
+def archiver(ctx, verbose):
+    """init and start the crossbar clients archiver and manager"""
+    click.echo(f"In archiver url={ctx.obj['url']}")
+    extra={'user':ctx.obj['user'], 'password': ctx.obj['password']}
+    if ctx.obj['url'].startswith("wss://"):
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+    else:
+        ssl_context = None
+
+    levels = ['info', 'debug', 'trace']
+    ctx.obj['logLevel'] = levels[min(verbose,len(levels)-1)]
+    txaio.start_logging(level=ctx.obj['logLevel'])
+    config.fileConfig('logging.conf')
+    runner = ApplicationRunner(url=ctx.obj['url'], realm=ctx.obj['realm'], extra=extra, ssl=ssl_context)
+    # runner.run(ProviderManager, log_level=ctx.obj['logLevel'])
+    runner.run(ArchiverManager)

@@ -21,6 +21,7 @@ include README.rst
 include .gitchangelog.rc
 include newRelease.sh
 include requirements_dev.txt
+include logging.conf
 
 recursive-exclude docs/_build *
 global-exclude *.py[cod] __pycache__/* *.so *.dylib 
