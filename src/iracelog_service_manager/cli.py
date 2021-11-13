@@ -25,7 +25,7 @@ import autobahn
 import certifi
 import click
 import txaio
-import urllib3
+
 from autobahn.asyncio.wamp import ApplicationRunner
 from autobahn.asyncio.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
