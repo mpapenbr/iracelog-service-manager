@@ -3,8 +3,9 @@ from dataclasses import dataclass
 
 from autobahn.asyncio.wamp import ApplicationSession
 from autobahn.asyncio.wamp import Session
-from iracelog_service_manager.manager.commands import CommandType, ManagerCommand
 
+from iracelog_service_manager.manager.commands import CommandType
+from iracelog_service_manager.manager.commands import ManagerCommand
 from iracelog_service_manager.model.eventlookup import EventLookup
 from iracelog_service_manager.model.eventlookup import ProviderData
 
