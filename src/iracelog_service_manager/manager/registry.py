@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 from autobahn.asyncio.wamp import ApplicationSession
 from autobahn.asyncio.wamp import Session
+from iracelog_service_manager.manager.commands import CommandType, ManagerCommand
 
 from iracelog_service_manager.model.eventlookup import EventLookup
 from iracelog_service_manager.model.eventlookup import ProviderData
@@ -25,11 +26,15 @@ class Registry:
     def register_provider(self, data:any):
         print(f"{data}")        
         x = ProviderData(eventKey=data['eventKey'],manifests=data['manifests'], info=data['info'])
-        print(x)
+        # print(x)
         if data['eventKey'] in self.events.lookup:
             raise Exception("already there")
         self.events.lookup[data['eventKey']] = x
-        self.appSession.publish("racelog.manager.provider", {'eventType': 'new', 'eventData': dataclasses.asdict(x)})
+        # self.appSession.publish("racelog.manager.provider", {'eventType': 'new', 'eventData': dataclasses.asdict(x)})
+        tosend = ManagerCommand(type=CommandType.REGISTER, payload=x.__dict__).__dict__
+        
+        # print(tosend)
+        self.appSession.publish("racelog.manager.provider", tosend)
         # TODO: create db entry
         # TODO: announce new provider
     
@@ -37,6 +42,8 @@ class Registry:
         if eventKey in self.events.lookup:
             self.events.lookup.pop(eventKey)
             # TODO: announce removed provider
+            tosend = ManagerCommand(type=CommandType.UNREGISTER, payload=eventKey).__dict__
+            self.appSession.publish("racelog.manager.provider", tosend)
             return "provider removed"
         else:
             return f"No provider for {eventKey} "
