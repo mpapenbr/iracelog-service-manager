@@ -23,5 +23,9 @@ jobs:
       run: |
         pip install -r requirements_dev.txt
 
+    #TODO: setup db container
+    #TODO: setup db via alembic
     - name: Run tests
+      # maybe exclude alembic??
       run: tox
+

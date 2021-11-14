@@ -67,9 +67,10 @@ setup(
     install_requires=[
         'click>=8,<9',
         'autobahn>=21,<22',
-        'certifi',
-        'alembic>=1.7.5,<1.8'
-        # 'psycopg2>=2.8'
+        'certifi>=2021.10.8',
+        'alembic>=1.7.5,<1.8',
+        'alembic_utils>=0.7.3',
+        'psycopg2>=2.9,<3'
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={

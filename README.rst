@@ -30,7 +30,7 @@ Overview
 
 .. end-badges
 
-An example package. Generated with cookiecutter-pylibrary.
+This module is the backend for processing WAMP messages in the iRacelog project.
 
 * Free software: Apache Software License 2.0
 
@@ -76,3 +76,24 @@ Note, to combine the coverage data from all the tox environments run:
       - ::
 
             PYTEST_ADDOPTS=--cov-append tox
+
+Database
+--------
+
+The connection to the database is configured via the environment variable `DB_URL`. 
+
+::
+
+    DB_URL=postgresql://<user>:<password>@<dbhost>/<db_schema>
+
+Tests
+^^^^^
+
+For local developer tests the developer is responsible for managing the test instance. 
+To start with, create an empty database, define the `DB_URL` and initialize the database via `tox -e alembic`
+
+::
+
+    export DB_URL=postgresql://test:secret@localhost:5432/iracelog_test
+    tox -e alembic
+
