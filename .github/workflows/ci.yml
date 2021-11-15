@@ -1,7 +1,9 @@
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: 
+      - main
+      - '**'
   pull_request:
     branches: [main]
 
@@ -10,22 +12,24 @@ name: CI
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: mcr.microsoft.com/vscode/devcontainers/python:3.9
+    services:
+      postgres: 
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: secret
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-
     - name: Install dependencies
+      run: pip install -r requirements_ci.txt
+    
+    - name: Prepare db and run tests
       run: |
-        pip install -r requirements_dev.txt
-
-    #TODO: setup db container
-    #TODO: setup db via alembic
-    - name: Run tests
-      # maybe exclude alembic??
-      run: tox
+        tox -e alembic
+        tox -v
+      env: 
+        DB_URL: postgresql://postgres:secret@postgres:5432/postgres
+    
 
