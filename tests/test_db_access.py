@@ -15,12 +15,12 @@ def test_read_events(testOrm:Session):
 
 
 def test_write_event(testOrm:Session):
-    e = Event(Name="Hallo")
+    e = Event(name="Hallo")
     testOrm.add(e)
     # testOrm.commit()
     res = read_events(testOrm)
     assert e == res[0]
-    assert res[0].Name == "Hallo"
+    assert res[0].name == "Hallo"
 
 
 
