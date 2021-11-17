@@ -30,6 +30,6 @@ jobs:
         tox -e alembic
         tox -v
       env: 
-        DB_URL: postgresql://postgres:secret@postgres:5432/postgres
+        TEST_DB_URL: postgresql://postgres:secret@postgres:5432/postgres
     
 

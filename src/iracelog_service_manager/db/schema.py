@@ -18,33 +18,33 @@ Base = declarative_base()
 class Event(Base):
     __tablename__ = "event"
 
-    Id = Column(Integer, name="id", primary_key=True, autoincrement=True, nullable=False)
-    EventKey = Column(String, name="event_key", unique=True)
-    Name = Column(String, name="name")
-    Description = Column(String,name="description", nullable=True)
-    RecordDate = Column(TIMESTAMP, name="record_stamp", nullable=False, server_default=text('now()'))
-    Data = Column(postgresql.JSONB, name="data")
+    id = Column(Integer, name="id", primary_key=True, autoincrement=True, nullable=False)
+    eventKey = Column(String, name="event_key", unique=True)
+    name = Column(String, name="name")
+    description = Column(String,name="description", nullable=True)
+    recordDate = Column(TIMESTAMP, name="record_stamp", nullable=False, server_default=text('now()'))
+    data = Column(postgresql.JSONB, name="data")
 
     def toDict(self) -> str:
-        return {"id":self.Id, "eventKey": self.EventKey, "name": self.Name, "description": self.Description, "data": self.Data, "recordDate": self.RecordDate.isoformat()}
+        return {"id":self.id, "eventKey": self.eventKey, "name": self.name, "description": self.description, "data": self.data, "recordDate": self.recordDate.isoformat()}
 
 class WampData(Base):
     __tablename__ = "wampdata"
-    Id = Column(Integer, name="id", primary_key=True)        
-    EventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
-    Data = Column(postgresql.JSONB, name="data")    
-    Event = relationship("Event")
+    id = Column(Integer, name="id", primary_key=True)        
+    eventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
+    data = Column(postgresql.JSONB, name="data")    
+    event = relationship("Event")
 
 class AnalysisData(Base):
     __tablename__ = "analysis"
-    Id = Column(Integer, name="id", primary_key=True)        
-    EventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
-    Data = Column(postgresql.JSONB, name="data")        
+    id = Column(Integer, name="id", primary_key=True)        
+    eventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
+    data = Column(postgresql.JSONB, name="data")        
 
 class TrackData(Base):
     __tablename__ = "track"
-    Id = Column(Integer, name="id", primary_key=True)            
-    Data = Column(postgresql.JSONB, name="data")        
+    id = Column(Integer, name="id", primary_key=True)            
+    data = Column(postgresql.JSONB, name="data")        
 
 
 class EventExtraData(Base):
@@ -52,7 +52,7 @@ class EventExtraData(Base):
     contains data collected during event which may be usesful some time ;)
     """
     __tablename__ = "event_ext"
-    Id = Column(Integer, name="id", primary_key=True)            
-    EventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
-    Data = Column(postgresql.JSONB, name="data")        
+    id = Column(Integer, name="id", primary_key=True)            
+    eventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
+    data = Column(postgresql.JSONB, name="data")        
 
