@@ -8,6 +8,7 @@ from iracelog_service_manager.persistence.util import tx
 
 @tx
 def session_store_event(s:Session, payload:ProviderData):    
+    """extracts data from ProviderData and creates a new entry in the database"""
     # print(payload)
     store_event(s, Event(
         eventKey=payload.eventKey,
