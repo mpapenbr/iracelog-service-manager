@@ -32,10 +32,15 @@ class DbHandler():
        
 
 def db_connector(func) -> Connection:
+    """
+    gets a connection from the pool and passes it as first parameter to `func`
+    after finish the connection is returned to the pool
+    """
     @functools.wraps(func)
     def _wrapper(*args, **kwargs):
-        with DbHandler().eng.connect():
-            return func(args,kwargs)
+        with DbHandler().eng.connect() as con:
+            return func(con, *args,**kwargs)
+    return _wrapper
 
 
 def orm_session() -> Session:
@@ -53,14 +58,14 @@ def tx(func) -> Session:
     @functools.wraps(func)
     def _wrapper(*args, **kwargs):
         with DbHandler().eng.connect() as con:
-            dbSession = Session(bind=con)
-            dbSession.begin()
+            session = Session(bind=con)
+            session.begin()
             try:
-                ret = func(dbSession, *args,**kwargs)
-                dbSession.commit();
-                return ret;
+                ret = func(session, *args,**kwargs)
+                session.commit()
+                return ret
             except Exception as e:
-                dbSession.rollback()
+                session.rollback()
                 raise e
     return _wrapper
 
