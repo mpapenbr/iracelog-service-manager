@@ -1,0 +1,86 @@
+from dataclasses import dataclass
+
+
+from autobahn.asyncio.wamp import ApplicationSession
+from sqlalchemy.orm import Session
+from iracelog_service_manager.db.schema import Event
+from iracelog_service_manager.persistence.access import read_event_analysis, read_event_info, read_event_info_by_key, read_events, read_track_info
+from iracelog_service_manager.persistence.service import session_read_events, session_read_wamp_data_with_diff
+
+
+from iracelog_service_manager.persistence.util import DbHandler, db_session
+from iracelog_service_manager.persistence.util import orm_session
+from iracelog_service_manager.persistence.util import tx_session
+
+
+@dataclass
+class PublicAccess:
+    """handles endpoints for public access to archived data"""
+
+    s : ApplicationSession
+    """holds the WAMP session"""
+
+    def __post_init__(self):
+        self.s.register(self.get_events, 'racelog.public.get_events')
+        self.s.register(self.get_event_info, 'racelog.public.get_event_info')
+        self.s.register(self.get_event_info_by_key, 'racelog.public.get_event_info_by_key')
+        self.s.register(self.get_track_info, 'racelog.public.get_track_info')
+        self.s.register(self.get_event_analysis, 'racelog.public.archive.get_event_analysis')
+        self.s.register(self.get_archived_states_delta, 'racelog.public.archive.state.delta')
+
+    def get_events(self) -> dict:
+        """reads all events ordered by recorded data desc (latest first)"""
+        @db_session
+        def internal_read(dbSession:Session):
+            res = read_events(dbSession)
+            return [item.toDict() for item in res]
+        return internal_read()
+
+    def get_event_info(self, eventId:int) -> dict:
+        """reads event data by eventId"""
+        @db_session
+        def internal_read(dbSession:Session):
+            res = read_event_info(dbSession, eventId)
+            if res != None:
+                return res.toDict()
+            else:
+                return None
+        return internal_read()
+
+    def get_event_info_by_key(self, eventKey:str) -> dict:
+        """reads event data by eventKey"""
+        @db_session
+        def internal_read(dbSession:Session):
+            res = read_event_info_by_key(dbSession, eventKey)
+            if res != None:
+                return res.toDict()
+            else:
+                return None
+        return internal_read()
+
+    def get_event_analysis(self, eventId) -> dict:
+        """reads event analysis data by eventId"""
+        @db_session
+        def internal_read(dbSession:Session):
+            res = read_event_analysis(dbSession, eventId)
+            if res != None:
+                return res.data
+            else:
+                return None
+        return internal_read()
+
+    def get_track_info(self, trackId) -> dict:
+        """reads track data by trackId"""
+        @db_session
+        def internal_read(dbSession:Session):
+            res = read_track_info(dbSession, trackId)
+            if res != None:
+                return res.data
+            else:
+                return None
+        return internal_read()
+
+    def get_archived_states_delta(self, eventId:int, ts_begin:int, num:int) -> list[dict]:
+        """reads a range of states for an event"""
+        return session_read_wamp_data_with_diff(eventId=eventId,tsBegin=ts_begin,num=num)
+

@@ -26,6 +26,6 @@ class ProviderData:
     """manifest info for recording event"""
     info: EventInfo
 
-    dbId: int = field(init=False, default=None, repr=True)
+    dbId: int = field(default=None, repr=True)
     """the id used for the database"""
 
