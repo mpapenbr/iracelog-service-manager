@@ -7,13 +7,12 @@ The overall picture looks like this
 
 Upon connecting to the local iRacing instance the Racelogger registers with the backend with a unique id (this is generated via the current iRacing weekend info from telemetry).
 
-The manager announces the new provider on the `manager.provider` topic. 
+The manager announces the provider changes  on the `manager.provider` topic. 
 
-The analysis and archive components listen to this topic and prepare themselves to receive data from the topic `state.{id}` to which the Racelogger will post its data. 
-They also listen to the provider specific topic `manager.command.{id}`. 
-The manager announces specific events on this topic, for example: the provider has unregistered.
+The analysis and archive components listen to this topic and prepare themselves 
+to receive data from the topic `live.state.{id}` to which the Racelogger will post its data. 
 
-At the end of recording the Racelogger calls the `remove_provider` endpoint. The manager in turn announces this event on the topic `manager.command.{id}`
+At the end of recording the Racelogger calls the `remove_provider` endpoint. The manager in turn announces this event on the topic `manager.provider`
 
 Endpoints
 ---------
@@ -40,6 +39,11 @@ Endpoints
     * - racelog.manager.
       - used by the backend apps
       - backend
+      - call, register, publish, subscribe
+   
+    * - racelog.admin.
+      - used by admin CLI
+      - admin
       - call, register, publish, subscribe
 
 Crossbar
@@ -77,6 +81,10 @@ Racelogger
     * - racelog.store_event_extra_data
       - call
       - racelog.dataprovider.provide_event_extra_data
+    
+    * - racelog.state.{id}
+      - publish
+      - racelog.public.live.state.{id}
 
 Web
 ^^^
@@ -133,4 +141,10 @@ Web
       - racelog.public.live.state.{id}
       - live
       - get current state from racelogger 
+    
+    * - racelog.archive.wamp.delta
+      - call
+      - racelog.public.archive.state
+      - race replay
+      - used to get state messages for a time range
     
