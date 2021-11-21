@@ -30,7 +30,7 @@ from autobahn.asyncio.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
 from iracelog_service_manager import __version__
-from iracelog_service_manager.manager.archiver_main import ArchiverManager
+from iracelog_service_manager.manager.archive.archiver_main import ArchiverManager
 from iracelog_service_manager.manager.overall import ProviderManager
 
 

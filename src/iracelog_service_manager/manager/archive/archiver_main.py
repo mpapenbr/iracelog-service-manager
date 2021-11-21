@@ -4,8 +4,10 @@ this module handles manages race data provider
 import asyncio
 
 from autobahn.asyncio.wamp import ApplicationSession
+from iracelog_service_manager.manager.archive.admin_access import AdminAccess
 
-from iracelog_service_manager.manager.archiver import Archiver
+from iracelog_service_manager.manager.archive.archiver import Archiver
+from iracelog_service_manager.manager.archive.public_access import PublicAccess
 
 
 class ArchiverManager(ApplicationSession):
@@ -35,14 +37,17 @@ class ArchiverManager(ApplicationSession):
 
     def onDisconnect(self):
         self.log.info("Router connection closed")
+        asyncio.get_event_loop().stop()
 
     async def onJoin(self, details):
         self.log.info("joined {details}", details=details)
         try:
             archiver = Archiver(self)
+            PublicAccess(self)
+            AdminAccess(self)
+
         except Exception as e:
             self.log.error("Got exception {e}", e=e)
             self.leave()
         
-    def onDisconnect(self):
-        asyncio.get_event_loop().stop()
+

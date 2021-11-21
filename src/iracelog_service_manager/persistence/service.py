@@ -1,17 +1,102 @@
+from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import Session
-
-from iracelog_service_manager.db.schema import Event
+from sqlalchemy import text
+from iracelog_service_manager.db.schema import AnalysisData, Event, EventExtraData, TrackData, WampData
 from iracelog_service_manager.model.eventlookup import ProviderData
-from iracelog_service_manager.persistence.access import store_event
-from iracelog_service_manager.persistence.util import tx
+from iracelog_service_manager.model.message import Message, MessageType
+from iracelog_service_manager.persistence.access import read_events, read_track_info, store_event
+from iracelog_service_manager.persistence.util import db_connection, db_session, tx_session, tx_connection
 
 
-@tx
-def session_store_event(s:Session, payload:ProviderData):    
-    """extracts data from ProviderData and creates a new entry in the database"""
+@tx_session
+def session_process_new_event(s:Session, payload:ProviderData):
+    """
+    extracts data from ProviderData and creates a new entry in the database.
+    the id of the created event is stored in payload.dbId
+    also: an track entry is created if none exits.
+    """
     # print(payload)
-    store_event(s, Event(
+    e = Event(
         eventKey=payload.eventKey,
         name=payload.info['name'],
         description=payload.info['description'] if 'description' in payload.info else "",
-        data=payload.info))
+        data=payload.info)
+    store_event(s,e)
+    s.flush()
+    payload.dbId = e.id
+    # print(f"session_store_event: {e.__dict__}")
+    t = read_track_info(s, payload.info['trackId'])
+    if (t == None):
+        t = TrackData(id=payload.info['trackId'], 
+        data={
+            'trackId':payload.info['trackId'],
+            'sectors': payload.info['sectors'],
+            'trackLength': payload.info['trackLength'],
+            'trackDisplayName': payload.info['trackDisplayName'],
+            'trackDisplayShortName': payload.info['trackDisplayShortName'],
+            'trackConfigName': payload.info['trackConfigName']            
+        })
+        s.add(t)
+
+@tx_connection
+def session_remove_event(con:Connection, eventId:int):
+    """
+    removes an event (including data) from the database
+    """
+    con.execute(text(f"delete from {WampData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
+    con.execute(text(f"delete from {AnalysisData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
+    con.execute(text(f"delete from {EventExtraData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
+    con.execute(text(f"delete from {Event.__tablename__} where id=:eventId").bindparams(eventId=eventId))
+    
+@tx_session
+def session_store_state_msg(s:Session, eventId:int, payload:dict):
+    w = WampData(eventId=eventId, data=payload)
+    s.add(w)
+
+@db_session
+def session_read_events(dbSession:Session) -> dict:
+    res = dbSession.query(Event).order_by(Event.recordDate.desc()).all()
+    return [item.toDict() for item in res]
+
+@db_connection
+def session_read_wamp_data_with_diff(con:Connection, eventId=None,tsBegin=None, num=10) -> list[dict]:
+    """collect a number of messages from table WAMPDATA.
+    the first row of the result is the full data from the database and will be included "as is" (MessageType.STATE)
+    the following rows contain just the delta to the previous row.
+    we use a special message type for this data (MessageType.STATE_DELTA).
+    """
+    def compute_car_changes(ref, cur):
+        changes = []
+        # carsRef = ref[0]['payload']['cars']
+        # carsCur = cur[0]['payload']['cars']
+        for i in range(len(ref)):
+            for j in range(len(ref[i])):
+                if ref[i][j] != cur [i][j]:
+                    changes.append([i,j,cur[i][j]])
+        return changes
+
+    def compute_session_changes(ref, cur):
+        changes = []        
+        for i in range(len(ref)):
+            if ref[i] != cur [i]:
+                changes.append([i,cur[i]])
+        return changes
+
+    res = con.execute(text("""
+    select data from wampdata 
+    where event_id=:eventId and (data->'timestamp')::numeric > :tsBegin 
+    order by (data->'timestamp')::numeric asc 
+    limit :num
+    """).bindparams(eventId=eventId, tsBegin=tsBegin, num=num))
+    work = [row[0] for row in res]
+    ret = [work[0]]
+    ref = work[0]
+    for cur in work[1:]:
+        entry = {
+            'cars': compute_car_changes(ref['payload']['cars'], cur['payload']['cars']),
+            'session': compute_session_changes(ref['payload']['session'], cur['payload']['session']),
+            }
+        ret.append({'type':MessageType.STATE_DELTA.value, 'payload':entry, 'timestamp':cur['timestamp']})
+        ref = cur
+        
+    return ret
