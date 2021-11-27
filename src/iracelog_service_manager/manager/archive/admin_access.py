@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-
 from autobahn.asyncio.wamp import ApplicationSession
 
 from iracelog_service_manager.persistence.service import session_remove_event

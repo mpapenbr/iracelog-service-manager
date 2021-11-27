@@ -1,5 +1,4 @@
 import asyncio
-
 from dataclasses import dataclass
 from os import name
 
@@ -12,7 +11,8 @@ from iracelog_service_manager.manager.commands import CommandType
 from iracelog_service_manager.manager.commands import ManagerCommand
 from iracelog_service_manager.model.eventlookup import ProviderData
 from iracelog_service_manager.persistence.access import store_event
-from iracelog_service_manager.persistence.service import session_process_new_event, session_store_state_msg
+from iracelog_service_manager.persistence.service import session_process_new_event
+from iracelog_service_manager.persistence.service import session_store_state_msg
 from iracelog_service_manager.persistence.util import DbHandler
 from iracelog_service_manager.persistence.util import orm_session
 from iracelog_service_manager.persistence.util import tx_session

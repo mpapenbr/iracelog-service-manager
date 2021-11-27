@@ -1,6 +1,6 @@
 
-from dataclasses import dataclass
 import dataclasses
+from dataclasses import dataclass
 
 from autobahn.asyncio.wamp import ApplicationSession
 from autobahn.asyncio.wamp import Session
