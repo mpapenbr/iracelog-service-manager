@@ -1,6 +1,7 @@
 
 from enum import Enum
 
+
 class MessageType(Enum):
     EMPTY = 0
     STATE = 1

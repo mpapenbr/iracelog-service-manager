@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-
 from autobahn.asyncio.wamp import ApplicationSession
+
 from iracelog_service_manager.model.message import Message
 from iracelog_service_manager.persistence.service import session_store_state_msg
 

@@ -4,8 +4,8 @@ this module handles manages race data provider
 import asyncio
 
 from autobahn.asyncio.wamp import ApplicationSession
-from iracelog_service_manager.manager.archive.admin_access import AdminAccess
 
+from iracelog_service_manager.manager.archive.admin_access import AdminAccess
 from iracelog_service_manager.manager.archive.archiver import Archiver
 from iracelog_service_manager.manager.archive.public_access import PublicAccess
 

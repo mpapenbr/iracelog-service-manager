@@ -5,7 +5,6 @@ import asyncio
 
 from autobahn.asyncio.wamp import ApplicationSession
 
-
 from iracelog_service_manager.manager.registry import Registry
 from iracelog_service_manager.model.eventlookup import EventLookup
 
