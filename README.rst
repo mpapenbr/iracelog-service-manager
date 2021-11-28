@@ -22,9 +22,9 @@ Overview
     :target: https://codecov.io/github/mpapenbr/iracelog-service-manager
 
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/mpapenbr/iracelog-service-manager/v0.1.2.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/mpapenbr/iracelog-service-manager/v0.1.3.svg
     :alt: Commits since latest release
-    :target: https://github.com/mpapenbr/iracelog-service-manager/compare/v0.1.2...main
+    :target: https://github.com/mpapenbr/iracelog-service-manager/compare/v0.1.3...main
 
 
 
