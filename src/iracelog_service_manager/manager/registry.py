@@ -9,7 +9,7 @@ from iracelog_service_manager.manager.commands import CommandType
 from iracelog_service_manager.manager.commands import ManagerCommand
 from iracelog_service_manager.model.eventlookup import EventLookup
 from iracelog_service_manager.model.eventlookup import ProviderData
-from iracelog_service_manager.persistence.service import session_process_new_event
+from iracelog_service_manager.persistence.service import session_process_new_event, store_event_extra_data
 
 
 @dataclass
@@ -24,6 +24,7 @@ class Registry:
     def __post_init__(self):
         self.appSession.register(self.register_provider, 'racelog.dataprovider.register_provider')
         self.appSession.register(self.remove_provider, 'racelog.dataprovider.remove_provider')
+        self.appSession.register(self.process_event_extra_data, 'racelog.dataprovider.store_event_extra_data')
         self.appSession.register(self.list_providers, 'racelog.public.list_providers')
 
     def register_provider(self, data:any):
@@ -51,6 +52,14 @@ class Registry:
             tosend = ManagerCommand(type=CommandType.UNREGISTER, payload=eventKey).__dict__
             self.appSession.publish("racelog.manager.provider", tosend)
             return "provider removed"
+        else:
+            return f"No provider for {eventKey} "
+
+    def process_event_extra_data(self, eventKey:str, extraData:dict={}):
+        if eventKey in self.events.lookup:
+            event = self.events.lookup[eventKey]
+            session_store_event_extra_data(event.dbId, extraData)
+
         else:
             return f"No provider for {eventKey} "
     
