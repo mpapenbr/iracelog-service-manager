@@ -58,7 +58,12 @@ def session_remove_event(con:Connection, eventId:int):
     con.execute(text(f"delete from {AnalysisData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
     con.execute(text(f"delete from {EventExtraData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
     con.execute(text(f"delete from {Event.__tablename__} where id=:eventId").bindparams(eventId=eventId))
-    
+
+@tx_session
+def store_event_extra_data(s:Session, eventId:int, payload:dict):
+    extra_data = EventExtraData(eventId=eventId, data=payload)
+    s.add(extra_data)
+
 @tx_session
 def session_store_state_msg(s:Session, eventId:int, payload:dict):
     w = WampData(eventId=eventId, data=payload)
