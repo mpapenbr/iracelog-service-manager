@@ -45,10 +45,9 @@ class PublicAccess:
         @db_session
         def internal_read(dbSession:Session):
             res = read_event_info(dbSession, eventId)
-            if res != None:
+            if res is not None:
                 return res.toDict()
-            else:
-                return None
+            return None
         return internal_read()
 
     def get_event_info_by_key(self, eventKey:str) -> dict:
@@ -56,10 +55,9 @@ class PublicAccess:
         @db_session
         def internal_read(dbSession:Session):
             res = read_event_info_by_key(dbSession, eventKey)
-            if res != None:
+            if res is not None:
                 return res.toDict()
-            else:
-                return None
+            return None
         return internal_read()
 
     def get_event_analysis(self, eventId) -> dict:
@@ -67,10 +65,9 @@ class PublicAccess:
         @db_session
         def internal_read(dbSession:Session):
             res = read_event_analysis(dbSession, eventId)
-            if res != None:
+            if res is not None:
                 return res.data
-            else:
-                return None
+            return None
         return internal_read()
 
     def get_track_info(self, trackId) -> dict:
@@ -78,13 +75,11 @@ class PublicAccess:
         @db_session
         def internal_read(dbSession:Session):
             res = read_track_info(dbSession, trackId)
-            if res != None:
+            if res is not None:
                 return res.data
-            else:
-                return None
+            return None
         return internal_read()
 
     def get_archived_states_delta(self, eventId:int, ts_begin:int, num:int) -> list[dict]:
         """reads a range of states for an event"""
         return session_read_wamp_data_with_diff(eventId=eventId,tsBegin=ts_begin,num=num)
-
