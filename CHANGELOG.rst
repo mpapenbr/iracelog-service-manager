@@ -1,4 +1,24 @@
-
 Changelog
 =========
+
+
+v0.1.0 (2021-11-28)
+-------------------
+
+New
+~~~
+- Reworked wamp endpoints. [mpapenbr]
+- Database access. [mpapenbr]
+- Manager commands. [mpapenbr]
+- Register events. [mpapenbr]
+
+Changes
+~~~~~~~
+- Overview revisited. [mpapenbr]
+
+
+v0.0.0 (2021-10-24)
+-------------------
+- Add initial project skeleton. [mpapenbr]
+
 
