@@ -1,8 +1,9 @@
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm.session import Session
 
-from iracelog_service_manager.db.schema import AnalysisData, EventExtraData
+from iracelog_service_manager.db.schema import AnalysisData
 from iracelog_service_manager.db.schema import Event
+from iracelog_service_manager.db.schema import EventExtraData
 from iracelog_service_manager.db.schema import TrackData
 
 
