@@ -60,9 +60,20 @@ def session_remove_event(con:Connection, eventId:int):
     con.execute(text(f"delete from {Event.__tablename__} where id=:eventId").bindparams(eventId=eventId))
 
 @tx_session
-def store_event_extra_data(s:Session, eventId:int, payload:dict):
+def session_store_event_extra_data(s:Session, eventId:int, payload:dict):
+    """
+    stores extra event data in own table. Additionally checks if TrackData for the used
+    track already exists. If not they will be created.
+    """
     extra_data = EventExtraData(eventId=eventId, data=payload)
     s.add(extra_data)
+    trackId = payload['track']['trackId']
+    res = s.query(TrackData).filter_by(id=trackId).first()    
+    if res is None:
+        s.add(TrackData(id=trackId, data=payload['track']))
+    else:
+        #TODO: check if pit boundaries exist. if so leave method, otherwise merge json into existing        
+        pass
 
 @tx_session
 def session_store_state_msg(s:Session, eventId:int, payload:dict):
