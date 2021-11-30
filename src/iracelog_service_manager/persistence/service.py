@@ -18,6 +18,7 @@ from iracelog_service_manager.persistence.util import db_session
 from iracelog_service_manager.persistence.util import tx_connection
 from iracelog_service_manager.persistence.util import tx_session
 
+import json
 
 @tx_session
 def session_process_new_event(s:Session, payload:ProviderData):
@@ -71,8 +72,10 @@ def session_store_event_extra_data(s:Session, eventId:int, payload:dict):
     res = s.query(TrackData).filter_by(id=trackId).first()    
     if res is None:
         s.add(TrackData(id=trackId, data=payload['track']))
-    else:
-        #TODO: check if pit boundaries exist. if so leave method, otherwise merge json into existing        
+    else:        
+        if 'pit' not in res.data:            
+            res.data['pit'] = payload['track']['pit']
+            
         pass
 
 @tx_session
