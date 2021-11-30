@@ -1,3 +1,5 @@
+import json
+
 from sqlalchemy import text
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import Session
@@ -18,7 +20,6 @@ from iracelog_service_manager.persistence.util import db_session
 from iracelog_service_manager.persistence.util import tx_connection
 from iracelog_service_manager.persistence.util import tx_session
 
-import json
 
 @tx_session
 def session_process_new_event(s:Session, payload:ProviderData):
