@@ -1,7 +1,7 @@
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm.session import Session
 
-from iracelog_service_manager.db.schema import AnalysisData
+from iracelog_service_manager.db.schema import AnalysisData, EventExtraData
 from iracelog_service_manager.db.schema import Event
 from iracelog_service_manager.db.schema import TrackData
 
@@ -20,6 +20,11 @@ def read_event_info(s:Session, eventId:int) -> Event:
 def read_event_info_by_key(s:Session, eventKey:str) -> Event:
     """read a single event by its eventKey"""
     res = s.query(Event).filter_by(eventKey=eventKey).first()
+    return res
+
+def read_event_extra_info(s:Session, eventId:int) -> EventExtraData:
+    """read event extra data by eventId"""
+    res = s.query(EventExtraData).filter_by(eventId=eventId).first()
     return res
 
 def read_event_analysis(s:Session, eventId:int) -> AnalysisData:

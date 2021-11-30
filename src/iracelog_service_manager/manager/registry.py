@@ -9,7 +9,8 @@ from iracelog_service_manager.manager.commands import CommandType
 from iracelog_service_manager.manager.commands import ManagerCommand
 from iracelog_service_manager.model.eventlookup import EventLookup
 from iracelog_service_manager.model.eventlookup import ProviderData
-from iracelog_service_manager.persistence.service import session_process_new_event, store_event_extra_data
+from iracelog_service_manager.persistence.service import session_process_new_event
+from iracelog_service_manager.persistence.service import session_store_event_extra_data
 
 
 @dataclass
