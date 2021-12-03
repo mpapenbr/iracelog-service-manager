@@ -33,7 +33,7 @@ def session_process_new_event(s:Session, payload:ProviderData):
         eventKey=payload.eventKey,
         name=payload.info['name'],
         description=payload.info['description'] if 'description' in payload.info else "",
-        data=payload.info)
+        data={'info':payload.info, 'manifests': payload.manifests})
     store_event(s,e)
     s.flush()
     payload.dbId = e.id
