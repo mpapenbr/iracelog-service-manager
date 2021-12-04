@@ -19,15 +19,14 @@ import asyncio
 import configparser
 import os
 import ssl
+import time
 from logging import config
 
 import autobahn
 import certifi
 import click
-import time
 import txaio
 import urllib3
-
 from autobahn.asyncio.wamp import ApplicationRunner
 from autobahn.asyncio.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
