@@ -24,7 +24,10 @@ from logging import config
 import autobahn
 import certifi
 import click
+import time
 import txaio
+import urllib3
+
 from autobahn.asyncio.wamp import ApplicationRunner
 from autobahn.asyncio.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
@@ -34,21 +37,40 @@ from iracelog_service_manager.manager.archive.archiver_main import ArchiverManag
 from iracelog_service_manager.manager.overall import ProviderManager
 
 
+def wait_for_crossbar(url:str):
+    connected = False
+    http = urllib3.PoolManager()
+    while not connected:
+        try:
+            print(f"Checking if crossbar server is ready with {url}")
+            resp = http.request('GET', url)
+            connected = resp.status == 200
+        except urllib3.exceptions.MaxRetryError as e:
+            click.echo(f"crossbar not ready {e}", err=True)
+            time.sleep(1)
+
 @click.group()
 @click.pass_context
 @click.option('--url', help='url of the crossbar server', envvar="RACELOG_URL", show_default=True)
 @click.option('--realm', help='crossbar realm for racelogger ', envvar="RACELOG_REALM", show_default=True)
 @click.option('--user', help='user name to access crossbar realm', envvar="RACELOG_USER", required=True)
 @click.option('--password', help='user password  to access crossbar realm', envvar="RACELOG_PASSWORD", required=True)
+@click.option('--check', help='use this url to validate a running crossbar server upfront')
 @click.version_option(__version__)
-def main(ctx,url,realm,user,password):
+def main(ctx,url,realm,user,password,check):
     ctx.ensure_object(dict)
     ctx.obj['url'] = url
     ctx.obj['realm'] = realm
     ctx.obj['user'] = user
     ctx.obj['password'] = password
-    pass
+    
+    if check is not None:
+        wait_for_crossbar(check)
+    
  
+
+        
+
 @main.command()
 @click.pass_context
 @click.option('--verbose', "-v", help='set verbosity level', count=True)
@@ -60,14 +82,15 @@ def manager(ctx, verbose):
         ssl_context = ssl.create_default_context(cafile=certifi.where())
     else:
         ssl_context = None
-
+    
     levels = ['info', 'debug', 'trace']
     ctx.obj['logLevel'] = levels[min(verbose,len(levels)-1)]
     txaio.start_logging(level=ctx.obj['logLevel'])
     config.fileConfig('logging.conf')
+    
     runner = ApplicationRunner(url=ctx.obj['url'], realm=ctx.obj['realm'], extra=extra, ssl=ssl_context)
-    # runner.run(ProviderManager, log_level=ctx.obj['logLevel'])
     runner.run(ProviderManager)
+    
 
 @main.command()
 @click.pass_context
