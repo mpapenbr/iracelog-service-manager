@@ -23,7 +23,7 @@ def read(*names, **kwargs):
 
 setup(
     name='iracelog-service-manager',
-    version='0.2.0',
+    version='0.2.1',
     license='Apache-2.0',
     description='Managing services for iRacelog backend.',
     long_description='%s\n%s' % (
