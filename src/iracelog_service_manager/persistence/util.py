@@ -28,6 +28,7 @@ class DbHandler():
             os.environ.get(ENV_DB_URL),
             pool_pre_ping=True,
             echo_pool=True,
+            echo=False # set to True to enable stdout logging of SQL
             )
         
     def new_session(self):

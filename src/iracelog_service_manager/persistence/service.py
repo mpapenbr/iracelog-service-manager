@@ -3,6 +3,7 @@ import json
 from sqlalchemy import text
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.attributes import flag_modified
 
 from iracelog_service_manager.db.schema import AnalysisData
 from iracelog_service_manager.db.schema import Event
@@ -76,6 +77,16 @@ def session_store_event_extra_data(s:Session, eventId:int, payload:dict):
     else:        
         if 'pit' not in res.data:            
             res.data['pit'] = payload['track']['pit']
+            # tell orm session that attr 'data' is modified
+            # otherwise it won't get persisted
+            flag_modified(res, 'data')
+            
+            # the other way would be the following
+            # Don't know which is one is more ugly 
+
+            # new_data = dict(res.data)
+            # new_data['pit'] = payload['track']['pit']
+            # res.data = new_data
             
         pass
 
