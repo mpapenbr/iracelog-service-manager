@@ -1,0 +1,31 @@
+FROM python:3.10 as builder
+
+RUN cd / && wget https://github.com/NixOS/patchelf/archive/0.10.tar.gz \
+    && tar xfz 0.10.tar.gz \
+    && cd patchelf-0.10/ \
+    && ./bootstrap.sh \
+    && ./configure \
+    && make \
+    && make install 
+
+WORKDIR /mybuild
+COPY /src src
+COPY /scripts/wait-for-it.sh .
+COPY setup.py setup.cfg README.rst CHANGELOG.rst logging.conf .
+
+RUN mkdir tmp
+RUN pip install pyinstaller staticx
+RUN pip install -e .
+RUN pyinstaller --clean --noconfirm -F src/iracelog_service_manager/__main__.py  --name ism
+RUN cd dist && staticx --strip ism ism_app
+
+
+FROM debian
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+WORKDIR /ism
+COPY /scripts/wait-for-it.sh .
+COPY --from=builder /mybuild/tmp /tmp
+COPY --from=builder /mybuild/dist/ism_app /usr/local/bin/ism
+COPY README.rst CHANGELOG.rst logging.conf .
+

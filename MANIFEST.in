@@ -24,6 +24,7 @@ include requirements_dev.txt
 include requirements_ci.txt
 include logging.conf
 include Dockerfile
+include Dockerfile-small-img
 
 recursive-exclude docs/_build *
 global-exclude *.py[cod] __pycache__/* *.so *.dylib 

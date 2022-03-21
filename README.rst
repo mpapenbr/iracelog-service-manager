@@ -97,3 +97,15 @@ To start with, create an empty database, define the `DB_URL` and initialize the 
     export DB_URL=postgresql://test:secret@localhost:5432/iracelog_test
     tox -e alembic
 
+Images
+~~~~~~
+
+There is an experimental Dockerfile-small-img. 
+The main idea is to have a single statically linked executable in an otherwise empty image.
+Drawbacks:
+- We cannot use the scratch base image since the Python Click module requires locales to be available. 
+- While the single executable would be fine for archiver and manager we would need another image for the db migration via alembic. 
+
+So for now we continue to work with the (big) python image.
+
+This is based on this article https://medium.com/analytics-vidhya/dockerizing-a-rest-api-in-python-less-than-9-mb-and-based-on-scratch-image-ef0ee3ad3f0a
