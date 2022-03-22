@@ -7,10 +7,10 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/vscode/devcontainers/python:3.9
+    container: mcr.microsoft.com/vscode/devcontainers/python:3.10
     services:
       postgres: 
-        image: postgres:13
+        image: postgres:14
         env:
           POSTGRES_PASSWORD: secret
 
