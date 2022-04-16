@@ -97,12 +97,20 @@ To start with, create an empty database, define the `DB_URL` and initialize the 
     export DB_URL=postgresql://test:secret@localhost:5432/iracelog_test
     tox -e alembic
 
+When running tests locally you will need to export the above db connection with the key TEST_DB_URL. 
+To get all vars in .env exposed to the shell use
+::
+    
+    export $(cat .env)
+
+
 Images
 ~~~~~~
 
 There is an experimental Dockerfile-small-img. 
 The main idea is to have a single statically linked executable in an otherwise empty image.
 Drawbacks:
+
 - We cannot use the scratch base image since the Python Click module requires locales to be available. 
 - While the single executable would be fine for archiver and manager we would need another image for the db migration via alembic. 
 

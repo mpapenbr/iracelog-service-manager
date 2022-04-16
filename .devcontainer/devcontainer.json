@@ -39,7 +39,8 @@
 		"ms-python.vscode-pylance",
 		"lextudio.restructuredtext",
 		"trond-snekvik.simple-rst",
-		"patbenatar.advanced-new-file"
+		"patbenatar.advanced-new-file",
+		"GitHub.vscode-pull-request-github"
 
 	],
 
