@@ -10,7 +10,7 @@ Upon connecting to the local iRacing instance the Racelogger registers with the 
 The manager announces the provider changes  on the `manager.provider` topic. 
 
 The analysis and archive components listen to this topic and prepare themselves 
-to receive data from the topic `live.state.{id}` to which the Racelogger will post its data. 
+to receive data from the topic `live.state.{key}` to which the Racelogger will post its data. 
 
 At the end of recording the Racelogger calls the `remove_provider` endpoint. The manager in turn announces this event on the topic `manager.provider`
 
