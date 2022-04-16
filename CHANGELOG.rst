@@ -2,6 +2,18 @@ Changelog
 =========
 
 
+v0.2.4 (2022-04-16)
+-------------------
+
+Changes
+~~~~~~~
+- Additional rpc. [mpapenbr]
+
+Fix
+~~~
+- Delta data composition (issue #1) [mpapenbr]
+
+
 v0.2.3 (2022-02-19)
 -------------------
 
