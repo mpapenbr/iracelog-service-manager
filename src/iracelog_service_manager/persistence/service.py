@@ -111,16 +111,22 @@ def session_read_wamp_data_with_diff(con:Connection, eventId=None,tsBegin=None, 
         changes = []
         # carsRef = ref[0]['payload']['cars']
         # carsCur = cur[0]['payload']['cars']
-        for i in range(len(ref)):
-            for j in range(len(ref[i])):
-                if ref[i][j] != cur [i][j]:
+        for i in range(len(cur)):
+            for j in range(len(cur[i])):
+                if i <len(ref) and j < len(ref[i]):
+                    if ref[i][j] != cur [i][j]:
+                        changes.append([i,j,cur[i][j]])
+                else:
                     changes.append([i,j,cur[i][j]])
         return changes
 
     def compute_session_changes(ref, cur):
         changes = []        
-        for i in range(len(ref)):
-            if ref[i] != cur [i]:
+        for i in range(len(cur)):
+            if i < len(ref):
+                if ref[i] != cur [i]:
+                    changes.append([i,cur[i]])
+            else:
                 changes.append([i,cur[i]])
         return changes
 
@@ -130,6 +136,9 @@ def session_read_wamp_data_with_diff(con:Connection, eventId=None,tsBegin=None, 
     order by (data->'timestamp')::numeric asc 
     limit :num
     """).bindparams(eventId=eventId, tsBegin=tsBegin, num=num))
+    
+    if res.rowcount == 0:
+        return []
     work = [row[0] for row in res]
     ret = [work[0]]
     ref = work[0]

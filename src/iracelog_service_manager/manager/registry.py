@@ -29,6 +29,9 @@ class Registry:
         self.appSession.register(self.list_providers, 'racelog.public.list_providers')
 
     def register_provider(self, data:any):
+        """
+        handles registration of a provider
+        """
         # print(f"{data}")        
         x = ProviderData(eventKey=data['eventKey'],manifests=data['manifests'], info=data['info'])
         # print(x)
@@ -47,6 +50,9 @@ class Registry:
         # TODO: announce new provider
     
     def remove_provider(self, eventKey:str):
+        """
+        handles the removal of a provider
+        """
         if eventKey in self.events.lookup:
             self.events.lookup.pop(eventKey)
             # TODO: announce removed provider
@@ -57,6 +63,9 @@ class Registry:
             return f"No provider for {eventKey} "
 
     def process_event_extra_data(self, eventKey:str, extraData:dict={}):
+        """
+        the provider may send extra data. this is handled here
+        """
         if eventKey in self.events.lookup:
             event = self.events.lookup[eventKey]
             session_store_event_extra_data(event.dbId, extraData)

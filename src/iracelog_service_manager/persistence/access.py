@@ -5,6 +5,7 @@ from iracelog_service_manager.db.schema import AnalysisData
 from iracelog_service_manager.db.schema import Event
 from iracelog_service_manager.db.schema import EventExtraData
 from iracelog_service_manager.db.schema import TrackData
+from iracelog_service_manager.db.schema import WampData
 
 
 def read_events(s:Session):
@@ -37,6 +38,11 @@ def read_event_analysis(s:Session, eventId:int) -> AnalysisData:
 def read_track_info(s:Session, trackId:int) -> TrackData:
     """read track data by trackId"""
     res = s.query(TrackData).filter_by(id=trackId).first()
+    return res
+
+def read_wamp_data(s:Session, eventId:int) -> WampData:
+    """read wamp data by eventId (just used for tests)"""
+    res = s.query(WampData).filter_by(eventId=eventId).all()
     return res
 
 
