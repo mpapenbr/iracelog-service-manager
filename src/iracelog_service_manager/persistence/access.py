@@ -1,7 +1,7 @@
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm.session import Session
 
-from iracelog_service_manager.db.schema import AnalysisData
+from iracelog_service_manager.db.schema import AnalysisData, SpeedMap
 from iracelog_service_manager.db.schema import Event
 from iracelog_service_manager.db.schema import EventExtraData
 from iracelog_service_manager.db.schema import TrackData
@@ -43,6 +43,11 @@ def read_track_info(s:Session, trackId:int) -> TrackData:
 def read_wamp_data(s:Session, eventId:int) -> WampData:
     """read wamp data by eventId (just used for tests)"""
     res = s.query(WampData).filter_by(eventId=eventId).all()
+    return res
+
+def read_speedmap_data(s:Session, eventId:int) -> SpeedMap:
+    """read speedmap data by eventId (just used for tests)"""
+    res = s.query(SpeedMap).filter_by(eventId=eventId).all()
     return res
 
 
