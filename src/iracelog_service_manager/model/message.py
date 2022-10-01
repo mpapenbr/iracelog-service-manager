@@ -12,6 +12,8 @@ class MessageType(Enum):
     REGISTER_PROVIDER = 6
     MANIFESTS = 7
     STATE_DELTA = 8
+    SPEEDMAP = 9
+    DRIVERS = 10
     
 
 class Message:

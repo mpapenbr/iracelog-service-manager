@@ -24,7 +24,7 @@ class ArchiverManager(ApplicationSession):
     """
 
     def onConnect(self):
-        self.log.info("Client connected: {klass}", klass=ArchiverManager)
+        self.log.info("Client connected: {klass}", klass=ArchiverManager)        
         self.join(self.config.realm, authid=self.config.extra['user'], authmethods=["ticket"])
 
     def onChallenge(self, challenge):
