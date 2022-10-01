@@ -1,6 +1,7 @@
 # My own stuff
 env/
-
+.gitconfig.local*
+.npmrc
 *.py[cod]
 __pycache__
 

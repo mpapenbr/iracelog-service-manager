@@ -56,6 +56,7 @@ https://iracelog-service-manager.readthedocs.io/
 Development
 ===========
 
+
 To run all the tests run::
 
     tox
@@ -86,15 +87,19 @@ The connection to the database is configured via the environment variable `DB_UR
 
     DB_URL=postgresql://<user>:<password>@<dbhost>/<db_schema>
 
+.. Note::
+
+    When using the tox environment the env var TEST_DB_URL is used for DB_URL
+
 Tests
 ~~~~~
 
 For local developer tests the developer is responsible for managing the test instance. 
-To start with, create an empty database, define the `DB_URL` and initialize the database via `tox -e alembic`
+To start with, create an empty database, define the `TEST_DB_URL` and initialize the database via `tox -e alembic`
 
 ::
 
-    export DB_URL=postgresql://test:secret@localhost:5432/iracelog_test
+    export TEST_DB_URL=postgresql://test:secret@localhost:5432/iracelog_test
     tox -e alembic
 
 When running tests locally you will need to export the above db connection with the key TEST_DB_URL. 

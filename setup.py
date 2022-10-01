@@ -68,7 +68,7 @@ setup(
         'click>=8,<9',
         'autobahn>=21,<22',
         'certifi>=2021.10.8',
-        'alembic>=1.7.5,<1.8',
+        'alembic>=1.8.0,<2',
         'alembic_utils>=0.7.3',
         'psycopg2>=2.9,<3',
         "urllib3"

@@ -19,12 +19,13 @@ include CONTRIBUTING.rst
 include LICENSE
 include README.rst
 include .gitchangelog.rc
-include newRelease.sh
+include .env.sample
 include requirements_dev.txt
 include requirements_ci.txt
 include logging.conf
 include Dockerfile
 include Dockerfile-small-img
+include *.sh
 
 recursive-exclude docs/_build *
 global-exclude *.py[cod] __pycache__/* *.so *.dylib 
