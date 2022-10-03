@@ -5,9 +5,11 @@ from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import flag_modified
 
-from iracelog_service_manager.db.schema import AnalysisData, Driver, SpeedMap
+from iracelog_service_manager.db.schema import AnalysisData
+from iracelog_service_manager.db.schema import Driver
 from iracelog_service_manager.db.schema import Event
 from iracelog_service_manager.db.schema import EventExtraData
+from iracelog_service_manager.db.schema import SpeedMap
 from iracelog_service_manager.db.schema import TrackData
 from iracelog_service_manager.db.schema import WampData
 from iracelog_service_manager.model.eventlookup import ProviderData

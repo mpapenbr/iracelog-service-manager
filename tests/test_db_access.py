@@ -1,10 +1,8 @@
 from sqlalchemy.orm import Session
 
-from iracelog_service_manager.persistence.access import read_events
-from iracelog_service_manager.persistence.util import  orm_session
 from iracelog_service_manager.db.schema import Event
-
-
+from iracelog_service_manager.persistence.access import read_events
+from iracelog_service_manager.persistence.util import orm_session
 
 
 def test_read_events(testOrm:Session):
