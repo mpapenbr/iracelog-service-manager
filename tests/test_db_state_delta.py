@@ -1,11 +1,13 @@
 from multiprocessing.connection import Connection
+
 from sqlalchemy.orm import Session
 
-from iracelog_service_manager.persistence.access import read_events, read_wamp_data
+from iracelog_service_manager.db.schema import Event
+from iracelog_service_manager.db.schema import WampData
+from iracelog_service_manager.persistence.access import read_events
+from iracelog_service_manager.persistence.access import read_wamp_data
 from iracelog_service_manager.persistence.service import session_read_wamp_data_with_diff
-from iracelog_service_manager.persistence.util import  orm_session
-from iracelog_service_manager.db.schema import Event, WampData
-
+from iracelog_service_manager.persistence.util import orm_session
 
 # Tests for get event states (wampdata) with delta
 

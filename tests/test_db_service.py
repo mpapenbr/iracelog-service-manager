@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
 
-from iracelog_service_manager.persistence.access import read_event_extra_info, read_track_info
+from iracelog_service_manager.db.schema import Event
+from iracelog_service_manager.db.schema import TrackData
+from iracelog_service_manager.persistence.access import read_event_extra_info
+from iracelog_service_manager.persistence.access import read_track_info
 from iracelog_service_manager.persistence.service import session_store_event_extra_data
-from iracelog_service_manager.db.schema import Event, TrackData
-
 
 std_extra_data = {'track':{'trackId': 12, 'trackName': "testTrack"}}
 full_extra_data = {'track':{'trackId': 12, 'trackName': "testTrack", "pit": {"entry": 34, "exit": 56}}}

@@ -1,11 +1,10 @@
+import os
+
+import pytest
 from sqlalchemy import event
 from sqlalchemy.engine import create_engine
-from sqlalchemy.orm.session import sessionmaker
-import pytest
-import os
 from sqlalchemy.orm import Session
-
-
+from sqlalchemy.orm.session import sessionmaker
 
 
 @pytest.fixture(scope="module")
