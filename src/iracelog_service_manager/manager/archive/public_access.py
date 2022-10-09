@@ -4,9 +4,9 @@ from autobahn.asyncio.wamp import ApplicationSession
 from sqlalchemy.orm import Session
 
 from iracelog_service_manager.db.schema import Event
-from iracelog_service_manager.persistence.access import read_event_analysis
-from iracelog_service_manager.persistence.access import read_event_drivers
-from iracelog_service_manager.persistence.access import read_event_drivers_by_key
+from iracelog_service_manager.persistence.access import read_event_analysis, read_event_speedmap_latest_entry, read_event_speedmap_latest_entry_by_key
+from iracelog_service_manager.persistence.access import read_event_cars
+from iracelog_service_manager.persistence.access import read_event_cars_by_key
 from iracelog_service_manager.persistence.access import read_event_info
 from iracelog_service_manager.persistence.access import read_event_info_by_key
 from iracelog_service_manager.persistence.access import read_events
@@ -31,8 +31,10 @@ class PublicAccess:
         self.s.register(self.get_event_info, 'racelog.public.get_event_info')
         self.s.register(self.get_event_info_by_key, 'racelog.public.get_event_info_by_key')
         self.s.register(self.get_track_info, 'racelog.public.get_track_info')
-        self.s.register(self.get_event_drivers, 'racelog.public.get_event_drivers')
-        self.s.register(self.get_event_drivers_by_key, 'racelog.public.get_event_drivers_by_key')
+        self.s.register(self.get_event_cars, 'racelog.public.get_event_cars')
+        self.s.register(self.get_event_cars_by_key, 'racelog.public.get_event_cars_by_key')
+        self.s.register(self.get_event_speedmap, 'racelog.public.get_event_speedmap')
+        self.s.register(self.get_event_speedmap_by_key, 'racelog.public.get_event_speedmap_by_key')
         self.s.register(self.get_event_analysis, 'racelog.public.archive.get_event_analysis')
         self.s.register(self.get_archived_states_delta, 'racelog.public.archive.state.delta')
 
@@ -84,21 +86,41 @@ class PublicAccess:
             return None
         return internal_read()
 
-    def get_event_drivers(self, eventId: int) -> dict:
+    def get_event_cars(self, eventId: int) -> dict:
         """reads driver data (including car infos) by eventId"""
         @db_session
         def internal_read(dbSession: Session):
-            res = read_event_drivers(dbSession, eventId)
+            res = read_event_cars(dbSession, eventId)
             if res is not None:
                 return res.data
             return None
         return internal_read()
 
-    def get_event_drivers_by_key(self, eventKey: str) -> dict:
+    def get_event_cars_by_key(self, eventKey: str) -> dict:
         """reads driver data (including car infos) by eventKey"""
         @db_session
         def internal_read(dbSession: Session):
-            res = read_event_drivers_by_key(dbSession, eventKey)
+            res = read_event_cars_by_key(dbSession, eventKey)
+            if res is not None:
+                return res.data
+            return None
+        return internal_read()
+
+    def get_event_speedmap(self, eventId: int) -> dict:
+        """reads the latest speedmap data by eventId"""
+        @db_session
+        def internal_read(dbSession: Session):
+            res = read_event_speedmap_latest_entry(dbSession, eventId)
+            if res is not None:
+                return res.data
+            return None
+        return internal_read()
+
+    def get_event_speedmap_by_key(self, eventKey: str) -> dict:
+        """reads the latest speedmap data by eventKey"""
+        @db_session
+        def internal_read(dbSession: Session):
+            res = read_event_speedmap_latest_entry_by_key(dbSession, eventKey)
             if res is not None:
                 return res.data
             return None

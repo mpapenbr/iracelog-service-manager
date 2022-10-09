@@ -9,7 +9,7 @@ from iracelog_service_manager.db.schema import AnalysisData
 from iracelog_service_manager.db.schema import Driver
 from iracelog_service_manager.db.schema import Event
 from iracelog_service_manager.db.schema import EventExtraData
-from iracelog_service_manager.db.schema import SpeedMap
+from iracelog_service_manager.db.schema import Speedmap
 from iracelog_service_manager.db.schema import TrackData
 from iracelog_service_manager.db.schema import WampData
 from iracelog_service_manager.model.eventlookup import ProviderData
@@ -64,7 +64,7 @@ def session_remove_event(con: Connection, eventId: int):
     con.execute(text(f"delete from {AnalysisData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
     con.execute(text(f"delete from {EventExtraData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
     con.execute(text(f"delete from {Driver.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
-    con.execute(text(f"delete from {SpeedMap.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
+    con.execute(text(f"delete from {Speedmap.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
     con.execute(text(f"delete from {Event.__tablename__} where id=:eventId").bindparams(eventId=eventId))
 
 
@@ -105,7 +105,7 @@ def session_store_state_msg(s: Session, eventId: int, payload: dict):
 
 @tx_session
 def session_store_speedmap_msg(s: Session, eventId: int, payload: dict):
-    sm = SpeedMap(eventId=eventId, data=payload)
+    sm = Speedmap(eventId=eventId, data=payload)
     s.add(sm)
 
 
