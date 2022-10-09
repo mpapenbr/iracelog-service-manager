@@ -15,36 +15,40 @@ from sqlalchemy.sql.sqltypes import Float
 # eng = create_engine(os.environ.get("SQLALCHEMY_URL"))
 Base = declarative_base()
 
+
 class Event(Base):
     __tablename__ = "event"
 
     id = Column(Integer, name="id", primary_key=True, autoincrement=True, nullable=False)
     eventKey = Column(String, name="event_key", unique=True)
     name = Column(String, name="name")
-    description = Column(String,name="description", nullable=True)
+    description = Column(String, name="description", nullable=True)
     recordDate = Column(TIMESTAMP, name="record_stamp", nullable=False, server_default=text('now()'))
     data = Column(postgresql.JSONB, name="data")
 
     def toDict(self) -> str:
-        return {"id":self.id, "eventKey": self.eventKey, "name": self.name, "description": self.description, "data": self.data, "recordDate": self.recordDate.isoformat()}
+        return {"id": self.id, "eventKey": self.eventKey, "name": self.name, "description": self.description, "data": self.data, "recordDate": self.recordDate.isoformat()}
+
 
 class WampData(Base):
     __tablename__ = "wampdata"
-    id = Column(Integer, name="id", primary_key=True)        
+    id = Column(Integer, name="id", primary_key=True)
     eventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
-    data = Column(postgresql.JSONB, name="data")    
+    data = Column(postgresql.JSONB, name="data")
     event = relationship("Event")
+
 
 class AnalysisData(Base):
     __tablename__ = "analysis"
-    id = Column(Integer, name="id", primary_key=True)        
+    id = Column(Integer, name="id", primary_key=True)
     eventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
-    data = Column(postgresql.JSONB, name="data")        
+    data = Column(postgresql.JSONB, name="data")
+
 
 class TrackData(Base):
     __tablename__ = "track"
-    id = Column(Integer, name="id", primary_key=True)            
-    data = Column(postgresql.JSONB, name="data")        
+    id = Column(Integer, name="id", primary_key=True)
+    data = Column(postgresql.JSONB, name="data")
 
 
 class EventExtraData(Base):
@@ -52,25 +56,26 @@ class EventExtraData(Base):
     contains data collected during event which may be usesful some time ;)
     """
     __tablename__ = "event_ext"
-    id = Column(Integer, name="id", primary_key=True)            
+    id = Column(Integer, name="id", primary_key=True)
     eventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
-    data = Column(postgresql.JSONB, name="data")        
+    data = Column(postgresql.JSONB, name="data")
 
-class SpeedMap(Base):
+
+class Speedmap(Base):
     """
     contains speed map data for an event
     """
     __tablename__ = "speedmap"
-    id = Column(Integer, name="id", primary_key=True)            
+    id = Column(Integer, name="id", primary_key=True)
     eventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
-    data = Column(postgresql.JSONB, name="data")        
+    data = Column(postgresql.JSONB, name="data")
+
 
 class Driver(Base):
     """
     contains additional iracing driver and team data for an event
     """
     __tablename__ = "driver"
-    id = Column(Integer, name="id", primary_key=True)            
+    id = Column(Integer, name="id", primary_key=True)
     eventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
-    data = Column(postgresql.JSONB, name="data")        
-
+    data = Column(postgresql.JSONB, name="data")

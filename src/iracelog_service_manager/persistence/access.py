@@ -5,7 +5,7 @@ from iracelog_service_manager.db.schema import AnalysisData
 from iracelog_service_manager.db.schema import Driver
 from iracelog_service_manager.db.schema import Event
 from iracelog_service_manager.db.schema import EventExtraData
-from iracelog_service_manager.db.schema import SpeedMap
+from iracelog_service_manager.db.schema import Speedmap
 from iracelog_service_manager.db.schema import TrackData
 from iracelog_service_manager.db.schema import WampData
 
@@ -52,22 +52,37 @@ def read_wamp_data(s: Session, eventId: int) -> WampData:
     return res
 
 
-def read_speedmap_data(s: Session, eventId: int) -> SpeedMap:
+def read_speedmap_data(s: Session, eventId: int) -> Speedmap:
     """read speedmap data by eventId (just used for tests)"""
-    res = s.query(SpeedMap).filter_by(eventId=eventId).all()
+    res = s.query(Speedmap).filter_by(eventId=eventId).all()
     return res
 
 
-def read_event_drivers(s: Session, eventId: int) -> Driver:
+def read_event_cars(s: Session, eventId: int) -> Driver:
     """read driver data by eventId"""
     res = s.query(Driver).filter_by(eventId=eventId).first()
     return res
 
 
-def read_event_drivers_by_key(s: Session, eventKey: str) -> Driver:
+def read_event_cars_by_key(s: Session, eventKey: str) -> Driver:
     """read driver data by eventKey"""
     event = s.query(Driver).join(Event, Driver.eventId == Event.id).where(Event.eventKey == eventKey).first()
     return event
+
+
+def read_event_speedmap_latest_entry(s: Session, eventId: int) -> Speedmap:
+    """read the latest speedmap by eventId"""
+    # sind id is a bigserial we can get the latest entry by fetching the highest id for that event
+    res = s.query(Speedmap).filter_by(eventId=eventId).order_by(Speedmap.id.desc()).limit(1).first()
+    return res
+
+
+def read_event_speedmap_latest_entry_by_key(s: Session, eventKey: str) -> Speedmap:
+    """read the latest speedmap by eventKey"""
+    # sind id is a bigserial we can get the latest entry by fetching the highest id for that event
+    res = s.query(Speedmap).join(Event, Speedmap.eventId == Event.id).where(
+        Event.eventKey == eventKey).order_by(Speedmap.id.desc()).limit(1).first()
+    return res
 
 
 def store_event(s: Session, e: Event):
