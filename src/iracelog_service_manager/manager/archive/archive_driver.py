@@ -7,9 +7,9 @@ from iracelog_service_manager.persistence.service import session_store_driver_ms
 
 
 @dataclass
-class ArchiveDriver:
+class ArchiveCarData:
     """handles the archiving of incoming driver messages for an event"""
-    s : ApplicationSession
+    s: ApplicationSession
     """holds the WAMP session"""
     eventId: int
     """the event id to record"""
@@ -21,11 +21,10 @@ class ArchiveDriver:
         self._subscription = await self.s.subscribe(self.record, self.topic)
         print(f"got subscription {self._subscription}")
         pass
+
     def stop_recording(self):
         self._subscription.unsubscribe()
         pass
 
-    def record(self, msg: Message):        
+    def record(self, msg: Message):
         session_store_driver_msg(self.eventId, msg)
-        
-
