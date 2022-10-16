@@ -2,6 +2,27 @@ Changelog
 =========
 
 
+v0.3.0 (2022-10-16)
+-------------------
+
+New
+~~~
+- Support for speedmap and driver data #7. [mpapenbr]
+- Support for speedmap and driver data #7. [mpapenbr]
+
+Changes
+~~~~~~~
+- Renamed driver data to car data. [mpapenbr]
+
+Fix
+~~~
+- Adjusted test to new state_delta enum value. [mpapenbr]
+
+Other
+~~~~~
+- Support for speedmap and driver data Fixes #7. [mpapenbr]
+
+
 v0.2.4 (2022-04-16)
 -------------------
 
