@@ -2,7 +2,7 @@ from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm.session import Session
 
 from iracelog_service_manager.db.schema import AnalysisData
-from iracelog_service_manager.db.schema import Driver
+from iracelog_service_manager.db.schema import CarData
 from iracelog_service_manager.db.schema import Event
 from iracelog_service_manager.db.schema import EventExtraData
 from iracelog_service_manager.db.schema import Speedmap
@@ -58,15 +58,15 @@ def read_speedmap_data(s: Session, eventId: int) -> Speedmap:
     return res
 
 
-def read_event_cars(s: Session, eventId: int) -> Driver:
+def read_event_cars(s: Session, eventId: int) -> CarData:
     """read driver data by eventId"""
-    res = s.query(Driver).filter_by(eventId=eventId).first()
+    res = s.query(CarData).filter_by(eventId=eventId).first()
     return res
 
 
-def read_event_cars_by_key(s: Session, eventKey: str) -> Driver:
+def read_event_cars_by_key(s: Session, eventKey: str) -> CarData:
     """read driver data by eventKey"""
-    event = s.query(Driver).join(Event, Driver.eventId == Event.id).where(Event.eventKey == eventKey).first()
+    event = s.query(CarData).join(Event, CarData.eventId == Event.id).where(Event.eventKey == eventKey).first()
     return event
 
 

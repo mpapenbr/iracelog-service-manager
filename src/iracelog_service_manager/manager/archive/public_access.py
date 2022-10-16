@@ -4,11 +4,13 @@ from autobahn.asyncio.wamp import ApplicationSession
 from sqlalchemy.orm import Session
 
 from iracelog_service_manager.db.schema import Event
-from iracelog_service_manager.persistence.access import read_event_analysis, read_event_speedmap_latest_entry, read_event_speedmap_latest_entry_by_key
+from iracelog_service_manager.persistence.access import read_event_analysis
 from iracelog_service_manager.persistence.access import read_event_cars
 from iracelog_service_manager.persistence.access import read_event_cars_by_key
 from iracelog_service_manager.persistence.access import read_event_info
 from iracelog_service_manager.persistence.access import read_event_info_by_key
+from iracelog_service_manager.persistence.access import read_event_speedmap_latest_entry
+from iracelog_service_manager.persistence.access import read_event_speedmap_latest_entry_by_key
 from iracelog_service_manager.persistence.access import read_events
 from iracelog_service_manager.persistence.access import read_track_info
 from iracelog_service_manager.persistence.service import session_read_events
