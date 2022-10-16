@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import flag_modified
 
 from iracelog_service_manager.db.schema import AnalysisData
-from iracelog_service_manager.db.schema import Driver
+from iracelog_service_manager.db.schema import CarData
 from iracelog_service_manager.db.schema import Event
 from iracelog_service_manager.db.schema import EventExtraData
 from iracelog_service_manager.db.schema import Speedmap
@@ -63,7 +63,7 @@ def session_remove_event(con: Connection, eventId: int):
     con.execute(text(f"delete from {WampData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
     con.execute(text(f"delete from {AnalysisData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
     con.execute(text(f"delete from {EventExtraData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
-    con.execute(text(f"delete from {Driver.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
+    con.execute(text(f"delete from {CarData.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
     con.execute(text(f"delete from {Speedmap.__tablename__} where event_id=:eventId").bindparams(eventId=eventId))
     con.execute(text(f"delete from {Event.__tablename__} where id=:eventId").bindparams(eventId=eventId))
 
@@ -111,9 +111,9 @@ def session_store_speedmap_msg(s: Session, eventId: int, payload: dict):
 
 @tx_session
 def session_store_driver_msg(s: Session, eventId: int, payload: dict):
-    res = s.query(Driver).filter_by(eventId=eventId).first()
+    res = s.query(CarData).filter_by(eventId=eventId).first()
     if res is None:
-        s.add(Driver(eventId=eventId, data=payload))
+        s.add(CarData(eventId=eventId, data=payload))
     else:
         res.data = payload
         # tell orm session that attr 'data' is modified

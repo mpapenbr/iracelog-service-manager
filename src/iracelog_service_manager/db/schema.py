@@ -71,11 +71,11 @@ class Speedmap(Base):
     data = Column(postgresql.JSONB, name="data")
 
 
-class Driver(Base):
+class CarData(Base):
     """
-    contains additional iracing driver and team data for an event
+    contains additional iracing car,driver and team data for an event
     """
-    __tablename__ = "driver"
+    __tablename__ = "car"
     id = Column(Integer, name="id", primary_key=True)
     eventId = Column(Integer, ForeignKey("event.id"),  name="event_id", nullable=False)
     data = Column(postgresql.JSONB, name="data")
