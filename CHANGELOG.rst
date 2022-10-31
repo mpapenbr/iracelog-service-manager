@@ -2,6 +2,24 @@ Changelog
 =========
 
 
+v0.4.0 (2022-10-31)
+-------------------
+
+New
+~~~
+- Compute pit lane length for existing data (#10) [mpapenbr]
+
+Changes
+~~~~~~~
+- TrackPitSpeed in trackdata. [mpapenbr]
+
+Other
+~~~~~
+- Chore: removed check from standard tox env. [mpapenbr]
+
+  Last chance for this env. Currently complains only in github actions.
+
+
 v0.3.1 (2022-10-16)
 -------------------
 
