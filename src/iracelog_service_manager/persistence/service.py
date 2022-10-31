@@ -48,6 +48,7 @@ def session_process_new_event(s: Session, payload: ProviderData):
             'trackId': payload.info['trackId'],
             'sectors': payload.info['sectors'],
             'trackLength': payload.info['trackLength'],
+            'trackPitSpeed': payload.info['trackPitSpeed'],
             'trackDisplayName': payload.info['trackDisplayName'],
             'trackDisplayShortName': payload.info['trackDisplayShortName'],
             'trackConfigName': payload.info['trackConfigName']
