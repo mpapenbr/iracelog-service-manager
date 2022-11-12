@@ -47,7 +47,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
 
         # uncomment if you test on these interpreters:
         # 'Programming Language :: Python :: Implementation :: IronPython',
@@ -63,10 +63,10 @@ setup(
     keywords=[
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
-    python_requires='>=3.9',
+    python_requires='>=3.10',
     install_requires=[
         'click>=8,<9',
-        'autobahn>=21,<22',
+        'autobahn>=22,<23',
         'certifi>=2021.10.8',
         'alembic>=1.8.0,<2',
         'alembic_utils>=0.7.3',
