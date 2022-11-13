@@ -72,14 +72,14 @@ def read_event_cars_by_key(s: Session, eventKey: str) -> CarData:
 
 def read_event_speedmap_latest_entry(s: Session, eventId: int) -> Speedmap:
     """read the latest speedmap by eventId"""
-    # sind id is a bigserial we can get the latest entry by fetching the highest id for that event
+    # speedmap.id is a bigserial we can get the latest entry by fetching the highest id for that event
     res = s.query(Speedmap).filter_by(eventId=eventId).order_by(Speedmap.id.desc()).limit(1).first()
     return res
 
 
 def read_event_speedmap_latest_entry_by_key(s: Session, eventKey: str) -> Speedmap:
     """read the latest speedmap by eventKey"""
-    # sind id is a bigserial we can get the latest entry by fetching the highest id for that event
+    # speedmap.id is a bigserial we can get the latest entry by fetching the highest id for that event
     res = s.query(Speedmap).join(Event, Speedmap.eventId == Event.id).where(
         Event.eventKey == eventKey).order_by(Speedmap.id.desc()).limit(1).first()
     return res
