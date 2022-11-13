@@ -12,7 +12,7 @@ from iracelog_service_manager.persistence.access import read_event_speedmap_late
 from iracelog_service_manager.persistence.access import read_event_speedmap_latest_entry_by_key
 from iracelog_service_manager.persistence.access import read_events
 from iracelog_service_manager.persistence.access import read_track_info
-from iracelog_service_manager.persistence.service import session_read_wamp_data_with_diff
+from iracelog_service_manager.persistence.service import session_read_speedmap_data, session_read_wamp_data_with_diff
 from iracelog_service_manager.persistence.util import db_session
 
 
@@ -34,6 +34,7 @@ class PublicAccess:
         self.s.register(self.get_event_speedmap_by_key, 'racelog.public.get_event_speedmap_by_key')
         self.s.register(self.get_event_analysis, 'racelog.public.archive.get_event_analysis')
         self.s.register(self.get_archived_states_delta, 'racelog.public.archive.state.delta')
+        self.s.register(self.get_archived_speedmap, 'racelog.public.archive.speedmap')
 
     def get_events(self) -> dict:
         """reads all events ordered by recorded data desc (latest first)"""
@@ -126,3 +127,7 @@ class PublicAccess:
     def get_archived_states_delta(self, eventId: int, ts_begin: int, num: int) -> list[dict]:
         """reads a range of states for an event"""
         return session_read_wamp_data_with_diff(eventId=eventId, tsBegin=ts_begin, num=num)
+
+    def get_archived_speedmap(self, eventId: int, ts_begin: int, num: int) -> list[dict]:
+        """reads a range of speedmap entries for an event"""
+        return session_read_speedmap_data(eventId=eventId, tsBegin=ts_begin, num=num)

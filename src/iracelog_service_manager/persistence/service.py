@@ -179,3 +179,16 @@ def session_read_wamp_data_with_diff(con: Connection, eventId=None, tsBegin=None
         ref = cur
 
     return ret
+
+
+@db_connection
+def session_read_speedmap_data(con: Connection, eventId=None, tsBegin=None, num=10) -> list[dict]:
+    """collect a number of messages from table SPEEDMAP. 
+    """
+    res = con.execute(text("""
+    select data from speedmap
+    where event_id=:eventId and (data->'timestamp')::numeric > :tsBegin 
+    order by (data->'timestamp')::numeric asc 
+    limit :num
+    """).bindparams(eventId=eventId, tsBegin=tsBegin, num=num))
+    return [row[0] for row in res]
