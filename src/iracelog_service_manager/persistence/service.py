@@ -1,3 +1,4 @@
+from functools import reduce
 import json
 
 from sqlalchemy import text
@@ -159,9 +160,9 @@ def session_read_wamp_data_with_diff(con: Connection, eventId=None, tsBegin=None
         return changes
 
     res = con.execute(text("""
-    select data from wampdata 
-    where event_id=:eventId and (data->'timestamp')::numeric > :tsBegin 
-    order by (data->'timestamp')::numeric asc 
+    select data from wampdata
+    where event_id=:eventId and (data->'timestamp')::numeric > :tsBegin
+    order by (data->'timestamp')::numeric asc
     limit :num
     """).bindparams(eventId=eventId, tsBegin=tsBegin, num=num))
 
@@ -183,12 +184,127 @@ def session_read_wamp_data_with_diff(con: Connection, eventId=None, tsBegin=None
 
 @db_connection
 def session_read_speedmap_data(con: Connection, eventId=None, tsBegin=None, num=10) -> list[dict]:
-    """collect a number of messages from table SPEEDMAP. 
+    """collect a number of messages from table SPEEDMAP.
     """
     res = con.execute(text("""
     select data from speedmap
-    where event_id=:eventId and (data->'timestamp')::numeric > :tsBegin 
-    order by (data->'timestamp')::numeric asc 
+    where event_id=:eventId and (data->'timestamp')::numeric > :tsBegin
+    order by (data->'timestamp')::numeric asc
     limit :num
     """).bindparams(eventId=eventId, tsBegin=tsBegin, num=num))
     return [row[0] for row in res]
+
+
+def compute_laptime(chunks, size) -> float:
+    """computes the laptime of a lap by computing the time needed for each chunk (speed is given in km/h)"""
+    ret: float = reduce(lambda prev, cur: prev + size / (cur / 3.6), chunks, 0)
+    return ret
+
+
+@db_connection
+def session_avglap_over_time_modulo(con: Connection, eventId=None, interval_secs: int = 300) -> list[dict]:
+    """
+    computes the average lap time for each class in intervals by interval_secs
+    We start with the first speedmap entry where all classes have passed all chunks.
+    """
+    res = con.execute(text("""
+SELECT s.data
+FROM speedmap s
+  JOIN (SELECT sm.id,
+               ROW_NUMBER() OVER (ORDER BY sm.id) AS rownum
+        FROM speedmap sm
+          CROSS JOIN (SELECT id
+                      FROM speedmap
+                      WHERE event_id = :eventId
+                      AND   data -> 'payload' -> 'data' @? '$[*].keyvalue() ? (@.value == 0)'
+                      ORDER BY id DESC LIMIT 1) start
+        WHERE sm.id > start.id) o
+    ON o.id = s.id
+   AND o.rownum % (SELECT :interval_secs /(e.data -> 'info' -> 'speedmapInterval')::INT
+                   FROM event e
+                   WHERE e.id = s.event_id) = 1
+ORDER BY o.id ASC
+
+    """).bindparams(eventId=eventId, interval_secs=interval_secs))
+
+    def compute_laptime(chunks, size, track_len) -> float:
+        """computes the laptime for each class in this entry(row)"""
+        ret: float = reduce(lambda prev, cur: prev + size / (cur / 3.6), chunks, 0)
+        return ret
+
+    # if len(res) == 0:
+    #     return {}
+
+    rows = [row[0] for row in res]  # extract the SQL projection (we only do a "select s.data" so row[0] is just that)
+    chunk_size = rows[0]['payload']['chunkSize']
+    track_length = rows[0]['payload']['trackLength']
+
+    x = [{k: compute_laptime(v, chunk_size, track_length) for k, v in row['payload']['data'].items()} for row in rows]
+    return x
+
+
+@db_connection
+def session_avglap_over_time_date_bin(con: Connection, eventId=None, interval_secs: int = 300) -> list[dict]:
+    """
+    computes the average lap time for each class in intervals by interval_secs
+    We start with the first speedmap entry where all classes have passed all chunks.
+    This variant first collects the starting entry and used postgres' date_bin function to calculate the required entries.
+    """
+    # calculate start id and starting time for date_bin
+    res = con.execute(text("""
+SELECT sm.id,
+       (data -> 'timestamp')::DECIMAL AS start
+FROM (SELECT id,
+             event_id
+      FROM speedmap
+      WHERE event_id = :eventId
+      AND   data -> 'payload' -> 'data'  @? '$[*].keyvalue() ? (@.value.chunkSpeeds == 0)'
+      ORDER BY id DESC LIMIT 1) s
+  JOIN speedmap sm ON sm.event_id = s.event_id
+WHERE sm.id > s.id
+ORDER BY sm.id ASC LIMIT 1;
+
+    """).bindparams(eventId=eventId))
+    base = res.first()
+    if base is None:
+        base = con.execute(text("""
+SELECT id,
+       (data -> 'timestamp')::DECIMAL AS start
+FROM speedmap
+WHERE event_id = :eventId
+AND   data -> 'payload' -> 'data' @? '$[*].keyvalue() ? (@.value.laptime > 0)'
+ORDER BY id ASC LIMIT 1;
+
+        """).bindparams(eventId=eventId)).first()
+        if base is None:
+            return []
+
+    res = con.execute(text("""
+SELECT s.data
+FROM speedmap s
+WHERE s.id IN (SELECT y.firstId
+               FROM (SELECT x.id,
+                            x.cur,
+                            date_bin(':interval_secs seconds',x.cur,x.raceStart) AS binStart,
+                            x.cur - date_bin(':interval_secs seconds',x.cur,x.raceStart) AS delta,
+                            FIRST_VALUE(x.id) OVER (PARTITION BY date_bin (':interval_secs seconds',x.cur,x.raceStart) ORDER BY x.cur - date_bin (':interval_secs seconds',x.cur,x.raceStart)) AS firstId
+                     FROM (SELECT sm.id,
+                                  TO_TIMESTAMP((sm.data -> 'timestamp')::DECIMAL) AS cur,
+                                  TO_TIMESTAMP(:startTs) AS raceStart
+                                  FROM speedmap sm
+                           WHERE event_id = :eventId and id >= :startId ) x) y)
+ORDER by s.id asc
+;
+
+    """).bindparams(eventId=eventId, interval_secs=interval_secs, startId=base[0], startTs=base[1]))
+    rows = [row[0] for row in res]  # extract the SQL projection (we only do a "select s.data" so row[0] is just that)
+    chunk_size = rows[0]['payload']['chunkSize']
+    track_length = rows[0]['payload']['trackLength']
+    # ?? include track temp in return data?
+    # ?? include sessionTime?
+    ret = []
+    for row in rows:
+        laptimes = {k: v['laptime'] for k, v in row['payload']['data'].items()}
+        ret.append({'timestamp': row['timestamp'], 'sessionTime': row['payload']['sessionTime'],
+                   'timeOfDay': row['payload']['timeOfDay'], 'trackTemp': row['payload']['trackTemp'], 'laptimes': laptimes})
+    return ret
