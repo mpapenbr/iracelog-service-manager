@@ -2,6 +2,28 @@ Changelog
 =========
 
 
+v0.5.0 (2022-11-26)
+-------------------
+
+New
+~~~
+- Compute avg laptimes over time (#14) [mpapenbr]
+- Bulk speedmap data for replays #13. [mpapenbr]
+
+Changes
+~~~~~~~
+- Preparations for copy event (#16) [mpapenbr]
+
+Other
+~~~~~
+- Chore: cleanup, updated documentation. [mpapenbr]
+- Chore: bump python to 3.10 for readthedocs. [mpapenbr]
+- Chore: gha cache key, fix for Dockerfile. [mpapenbr]
+- Chore: use github cache. [mpapenbr]
+- Chore: use locked dependencies for github actions. [mpapenbr]
+- Build: updated main dependencies. [mpapenbr]
+
+
 v0.4.0 (2022-10-31)
 -------------------
 
