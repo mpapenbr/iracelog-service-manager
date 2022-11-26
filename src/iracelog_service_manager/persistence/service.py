@@ -1,10 +1,11 @@
 from functools import reduce
-import json
+from datetime import datetime
 
 from sqlalchemy import text
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import flag_modified
+
 
 from iracelog_service_manager.db.schema import AnalysisData
 from iracelog_service_manager.db.schema import CarData
@@ -32,20 +33,24 @@ def session_process_new_event(s: Session, payload: ProviderData):
     the id of the created event is stored in payload.dbId
     also: an track entry is created if none exits.
     """
-    # print(payload)
+    print(payload)
+    data = {'info': payload.info, 'manifests': payload.manifests, 'replayInfo': payload.replayInfo}
+
+    # via copy command the message may contain a recordDate of the source
     e = Event(
         eventKey=payload.eventKey,
         name=payload.info['name'],
         description=payload.info['description'] if 'description' in payload.info else "",
-        data={'info': payload.info, 'manifests': payload.manifests})
+        data=data,
+        recordDate=datetime.fromtimestamp(payload.recordDate) if payload.recordDate is not None else None)
+
     store_event(s, e)
     s.flush()
     payload.dbId = e.id
     # print(f"session_store_event: {e.__dict__}")
     t = read_track_info(s, payload.info['trackId'])
     if (t == None):
-        t = TrackData(id=payload.info['trackId'],
-                      data={
+        data_record = {
             'trackId': payload.info['trackId'],
             'sectors': payload.info['sectors'],
             'trackLength': payload.info['trackLength'],
@@ -53,7 +58,12 @@ def session_process_new_event(s: Session, payload: ProviderData):
             'trackDisplayName': payload.info['trackDisplayName'],
             'trackDisplayShortName': payload.info['trackDisplayShortName'],
             'trackConfigName': payload.info['trackConfigName']
-        })
+        }
+        if ('pit' in payload.info):
+            data_record['pit'] = payload.info['pit']
+
+        t = TrackData(id=payload.info['trackId'], data=data_record)
+
         s.add(t)
 
 

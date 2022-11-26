@@ -6,18 +6,28 @@ from dataclasses import field
 class EventLookup:
     lookup: dict = field(default_factory=dict)
 
+
 @dataclass
 class Manifest:
     car: list[str]
     state: list[str]
     session: list[str]
 
-@dataclass 
+
+@dataclass
 class EventInfo:
     name: str
-    description: field(init=False,default="")
+    description: field(init=False, default="")
 
-@dataclass 
+
+@dataclass
+class ReplayInfo:
+    minTimestamp: float
+    minSessionTime: float
+    maxSessionTime: float
+
+
+@dataclass
 class ProviderData:
     """holds data for an event from one data provider"""
     eventKey: str
@@ -25,7 +35,11 @@ class ProviderData:
     manifests: Manifest = field(repr=True)
     """manifest info for recording event"""
     info: EventInfo
+    """general event info"""
+    replayInfo: ReplayInfo
+    """optional information about replay boundaries"""
+    recordDate: float = field(default=None, repr=True)
+    """optional recording date as unix timestamp (used by racelogctl)"""
 
     dbId: int = field(default=None, repr=True)
     """the id used for the database"""
-
