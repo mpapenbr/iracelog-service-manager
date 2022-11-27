@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+v0.5.1 (2022-11-27)
+-------------------
+
+Fix
+~~~
+- Removed no longer needed ReplayInfo. [mpapenbr]
+
+
 v0.5.0 (2022-11-26)
 -------------------
 
