@@ -8,7 +8,7 @@ from autobahn.asyncio.wamp import Session
 
 from iracelog_service_manager.manager.commands import CommandType
 from iracelog_service_manager.manager.commands import ManagerCommand
-from iracelog_service_manager.model.eventlookup import EventLookup, ReplayInfo
+from iracelog_service_manager.model.eventlookup import EventLookup
 from iracelog_service_manager.model.eventlookup import ProviderData
 from iracelog_service_manager.persistence.service import session_process_new_event
 from iracelog_service_manager.persistence.service import session_store_event_extra_data
@@ -33,16 +33,14 @@ class Registry:
         handles registration of a provider
         """
         # print(f"{data}")
-        replayInfo: ReplayInfo = None
+
         recordDate: float = None
-        if 'replayInfo' in data:
-            replayInfo = data['replayInfo']
+
         if 'recordDate' in data:
             recordDate = data['recordDate']
 
-        print(f"registerProvider: replayInfo {replayInfo}")
         x = ProviderData(eventKey=data['eventKey'], manifests=data['manifests'],
-                         info=data['info'], replayInfo=replayInfo,
+                         info=data['info'],
                          recordDate=recordDate)
         # print(x)
         if data['eventKey'] in self.events.lookup:

@@ -21,13 +21,6 @@ class EventInfo:
 
 
 @dataclass
-class ReplayInfo:
-    minTimestamp: float
-    minSessionTime: float
-    maxSessionTime: float
-
-
-@dataclass
 class ProviderData:
     """holds data for an event from one data provider"""
     eventKey: str
@@ -36,8 +29,7 @@ class ProviderData:
     """manifest info for recording event"""
     info: EventInfo
     """general event info"""
-    replayInfo: ReplayInfo
-    """optional information about replay boundaries"""
+
     recordDate: float = field(default=None, repr=True)
     """optional recording date as unix timestamp (used by racelogctl)"""
 

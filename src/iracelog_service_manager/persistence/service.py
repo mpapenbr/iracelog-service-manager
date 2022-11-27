@@ -34,7 +34,7 @@ def session_process_new_event(s: Session, payload: ProviderData):
     also: an track entry is created if none exits.
     """
     print(payload)
-    data = {'info': payload.info, 'manifests': payload.manifests, 'replayInfo': payload.replayInfo}
+    data = {'info': payload.info, 'manifests': payload.manifests}
 
     # via copy command the message may contain a recordDate of the source
     e = Event(
