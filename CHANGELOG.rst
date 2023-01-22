@@ -2,6 +2,23 @@ Changelog
 =========
 
 
+v0.6.0 (2023-01-22)
+-------------------
+
+New
+~~~
+- Provide version information for racelogger compatibilty check (#18)
+  [mpapenbr]
+
+Other
+~~~~~
+- Doc: link to overall documentation. [mpapenbr]
+- Build: updated github actions + create release event. [mpapenbr]
+
+  Fixes #9
+  Fixes #12
+
+
 v0.5.1 (2022-11-27)
 -------------------
 
