@@ -6,6 +6,7 @@ import asyncio
 from autobahn.asyncio.wamp import ApplicationSession
 
 from iracelog_service_manager.manager.registry import Registry
+from iracelog_service_manager.manager.versions import Versions
 from iracelog_service_manager.model.eventlookup import EventLookup
 
 
@@ -29,7 +30,7 @@ class ProviderManager(ApplicationSession):
     def onChallenge(self, challenge):
         self.log.info("Challenge for method {authmethod} received", authmethod=challenge.method)
         return self.config.extra['password']
-    
+
     def onLeave(self, details):
         self.log.info("Router session closed ({details})", details=details)
         self.disconnect()
@@ -43,11 +44,11 @@ class ProviderManager(ApplicationSession):
             events = EventLookup()
             # archiver = Archiver(self)
             registry = Registry(appSession=self, events=events)
+            versions = Versions(appSession=self)
 
-            
         except Exception as e:
             self.log.error("Got exception {e}", e=e)
             self.leave()
-        
+
     def onDisconnect(self):
         asyncio.get_event_loop().stop()
