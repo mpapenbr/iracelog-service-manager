@@ -30,7 +30,8 @@ Overview
 
 .. end-badges
 
-This module is the backend for processing WAMP messages in the iRacelog project.
+This module is the backend for processing WAMP messages in the `iRacelog <https://github.com/mpapenbr/iracelog-documentation>`_ project. 
+
 
 * Free software: Apache Software License 2.0
 
