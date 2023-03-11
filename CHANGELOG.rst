@@ -2,6 +2,18 @@ Changelog
 =========
 
 
+v0.6.1 (2023-03-11)
+-------------------
+
+New
+~~~
+- Prepare db for go-migrate. [mpapenbr]
+
+Other
+~~~~~
+- Chore: make tox happy. [mpapenbr]
+
+
 v0.6.0 (2023-01-22)
 -------------------
 
