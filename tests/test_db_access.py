@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from iracelog_service_manager.db.schema import Event

@@ -5,13 +5,15 @@ These are not designed to be public available via crossbar endpoints.
 """
 
 from functools import reduce
+
 from sqlalchemy import text
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import Session
 
+from iracelog_service_manager.db.schema import Event
+from iracelog_service_manager.db.schema import Speedmap
 from iracelog_service_manager.persistence.util import tx_connection
 from iracelog_service_manager.persistence.util import tx_session
-from iracelog_service_manager.db.schema import Event, Speedmap
 
 
 @tx_session

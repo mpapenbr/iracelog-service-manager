@@ -22,6 +22,7 @@ include .gitchangelog.rc
 include .env.sample
 include requirements_dev.txt
 include requirements_ci.txt
+include requirements.txt
 include logging.conf
 include Dockerfile
 include Dockerfile-small-img

@@ -1,11 +1,10 @@
-from functools import reduce
 from datetime import datetime
+from functools import reduce
 
 from sqlalchemy import text
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import flag_modified
-
 
 from iracelog_service_manager.db.schema import AnalysisData
 from iracelog_service_manager.db.schema import CarData

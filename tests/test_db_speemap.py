@@ -4,8 +4,8 @@ from iracelog_service_manager.db.schema import Event
 from iracelog_service_manager.db.schema import Speedmap
 from iracelog_service_manager.persistence.access import read_event_speedmap_latest_entry
 from iracelog_service_manager.persistence.access import read_event_speedmap_latest_entry_by_key
-from iracelog_service_manager.persistence.service import session_read_speedmap_data
 from iracelog_service_manager.persistence.access import read_events
+from iracelog_service_manager.persistence.service import session_read_speedmap_data
 from iracelog_service_manager.persistence.util import orm_session
 
 
